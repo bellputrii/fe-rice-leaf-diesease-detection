@@ -23,6 +23,7 @@ build_project:
     expire_in: 1h
 
 deploy:
+  image: node:${NODE_VERSION}-alpine
   stage: deploy
   script:
     - npm install -g vercel
