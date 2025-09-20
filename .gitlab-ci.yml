@@ -14,7 +14,6 @@ variables:
 .base_rules: &base_rules
   only:
     - main
-    - dev
 
 Install:
   <<: *base_rules
@@ -45,13 +44,13 @@ Build:
     expire_in: 1h
 
 
-Deploy:
-  <<: *base_rules
-  stage: deploy
-  needs:
-    - Build
-  environment:
-    name: production
-  script:
-    - npm install -g vercel
-    - vercel --prod --yes --token=$VERCEL_TOKEN --scope $VERCEL_ORG_ID
+# Deploy:
+#   <<: *base_rules
+#   stage: deploy
+#   needs:
+#     - Build
+#   environment:
+#     name: production
+#   script:
+#     - npm install -g vercel
+#     - vercel --prod --confirm --token=$VERCEL_TOKEN --scope=$VERCEL_ORG_ID
