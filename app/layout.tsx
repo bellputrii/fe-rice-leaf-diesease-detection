@@ -23,8 +23,8 @@ const fontMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "LMS Sekolah Alam",
-  description: "Sekolah Alam Learning Management System",
+  title: "Ambil Prestasi",
+  description: "Platform kursus online untuk mengembangkan keterampilan dan meraih prestasi terbaikmu.",
 };
 
 export default async function RootLayout({
