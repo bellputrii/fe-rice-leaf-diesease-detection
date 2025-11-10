@@ -162,7 +162,7 @@ export default function ELearningPage() {
   // Fungsi untuk handle show more courses
   const handleShowMoreCourses = () => {
     if (!isAuthenticated) {
-      router.push('/login')
+      router.push('/auth/login')
       return
     }
     setShowAllCourses(true)
@@ -200,7 +200,7 @@ export default function ELearningPage() {
             localStorage.removeItem("token")
             setError('Sesi telah berakhir. Silakan login kembali.')
             setIsAuthenticated(false)
-            setTimeout(() => router.push('/login'), 2000)
+            setTimeout(() => router.push('/auth/login'), 2000)
             return
           }
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -448,7 +448,7 @@ export default function ELearningPage() {
 
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
                 <div className="relative w-full max-w-sm md:max-w-md">
-                  <Image
+                  <img
                     src="/e-learning.png"
                     alt="E-Learning"
                     className="rounded-xl md:rounded-2xl object-cover shadow-lg w-full h-auto"
@@ -536,7 +536,7 @@ export default function ELearningPage() {
                   <p className="text-yellow-700 font-medium">{error}</p>
                   {error.includes('login kembali') && (
                     <button 
-                      onClick={() => router.push('/login')}
+                      onClick={() => router.push('/auth/login')}
                       className="mt-3 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
                     >
                       Login Kembali

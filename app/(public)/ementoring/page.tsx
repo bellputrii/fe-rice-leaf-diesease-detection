@@ -90,7 +90,7 @@ export default function EMentoringPage() {
             // Token expired atau invalid
             localStorage.removeItem("token")
             setError('Sesi telah berakhir. Silakan login kembali.')
-            setTimeout(() => router.push('/login'), 2000)
+            setTimeout(() => router.push('/auth/login'), 2000)
             return
           }
           throw new Error(`HTTP error! status: ${response.status}`)
@@ -630,7 +630,7 @@ export default function EMentoringPage() {
                   <p className="text-yellow-700 font-medium">{error}</p>
                   {error.includes('login kembali') && (
                     <button 
-                      onClick={() => router.push('/login')}
+                      onClick={() => router.push('/auth/login')}
                       className="mt-3 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
                     >
                       Login Kembali

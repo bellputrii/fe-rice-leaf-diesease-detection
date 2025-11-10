@@ -171,7 +171,7 @@ export default function TeacherHome() {
           // Token expired atau invalid
           localStorage.removeItem("token")
           setError('Sesi telah berakhir. Silakan login kembali.')
-          setTimeout(() => router.push('/login'), 2000)
+          setTimeout(() => router.push('/auth/login'), 2000)
           return
         }
         throw new Error(`HTTP error! status: ${response.status}`)
@@ -365,7 +365,7 @@ export default function TeacherHome() {
         if (response.status === 401) {
           localStorage.removeItem("token")
           setMessageFailed('Sesi telah berakhir. Silakan login kembali.')
-          setTimeout(() => router.push('/login'), 2000)
+          setTimeout(() => router.push('/auth/login'), 2000)
           return
         }
         const errorData = await response.json().catch(() => null)
@@ -413,7 +413,7 @@ export default function TeacherHome() {
         if (response.status === 401) {
           localStorage.removeItem("token")
           setMessageFailed('Sesi telah berakhir. Silakan login kembali.')
-          setTimeout(() => router.push('/login'), 2000)
+          setTimeout(() => router.push('/auth/login'), 2000)
           return
         }
         const errorData = await response.json().catch(() => null)
@@ -521,7 +521,7 @@ export default function TeacherHome() {
                   <p className="text-yellow-700 font-medium">{error}</p>
                   {error.includes('login kembali') && (
                     <button 
-                      onClick={() => router.push('/login')}
+                      onClick={() => router.push('/auth/login')}
                       className="mt-3 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
                     >
                       Login Kembali
