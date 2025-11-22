@@ -187,7 +187,7 @@ export default function ELearningPage() {
             id: classItem.id,
             category: mapCategory(classItem.categoryId),
             title: classItem.name,
-            image: classItem.image_path_relative || '/placeholder.png',
+            image: classItem.image_path_relative || '/home.jpg',
             duration: `${Math.floor(Math.random() * 6) + 3} Jam`,
             participants: (Math.floor(Math.random() * 400) + 100).toString(),
             level: ['Pemula', 'Menengah', 'Lanjutan'][index % 3],
@@ -371,9 +371,9 @@ export default function ELearningPage() {
         <div className="flex flex-col gap-12 md:gap-16 px-4 sm:px-6 pt-16 md:pt-20">
           {/* Hero Section */}
           <section className="w-full max-w-7xl mx-auto">
-            <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-6 bg-blue-700 rounded-xl p-6 text-white">
+            <div className="grid grid-cols-1 lg:grid-cols-2 items-center gap-6 bg-blue-800 rounded-xl p-6 text-white">
               <div className="space-y-4 order-2 lg:order-1">
-                <div className="flex items-center gap-2 bg-blue-600 rounded-full px-3 py-1 w-fit">
+                <div className="flex items-center gap-2 bg-blue-700 rounded-full px-3 py-1 w-fit">
                   <BookOpen className="w-4 h-4" />
                   <span className="text-sm font-medium">E-Learning Platform</span>
                 </div>
@@ -420,7 +420,7 @@ export default function ELearningPage() {
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
                 <div className="relative w-full max-w-sm">
                   <img
-                    src="/e-learning.png"
+                    src="/elearning.jpg"
                     alt="E-Learning"
                     className="rounded-xl object-cover shadow-lg w-full h-auto"
                   />
@@ -565,24 +565,6 @@ export default function ELearningPage() {
 
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <span className="font-medium text-xs">{course.instructor}</span>
-                        </div>
-
-                        <div className="flex items-center justify-between text-xs text-gray-600">
-                          <div className="flex items-center gap-3">
-                            <div className="flex items-center gap-1">
-                              <Clock className="w-3 h-3" />
-                              <span>{course.duration}</span>
-                            </div>
-                            <div className="flex items-center gap-1">
-                              <Users className="w-3 h-3" />
-                              <span>{course.participants}</span>
-                            </div>
-                          </div>
-                          <div className="flex items-center gap-1">
-                            <Star className="w-3 h-3 text-yellow-400 fill-current" />
-                            <span className="font-semibold">{course.rating}</span>
-                            <span className="text-gray-400">({course.totalReviews})</span>
-                          </div>
                         </div>
 
                         <button 
@@ -788,7 +770,7 @@ export default function ELearningPage() {
                     key={index}
                     className="bg-white rounded-lg p-4 shadow-md text-center"
                   >
-                    <div className="bg-blue-700 text-white w-10 h-10 rounded-full flex items-center justify-center text-base font-bold mb-3 mx-auto">
+                    <div className="bg-blue-800 text-white w-10 h-10 rounded-full flex items-center justify-center text-base font-bold mb-3 mx-auto">
                       {step.step}
                     </div>
                     <div className="bg-blue-200 text-blue-700 p-2 rounded-lg w-fit mx-auto mb-3">

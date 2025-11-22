@@ -378,12 +378,12 @@ export default function ProfilePage() {
   if (error && !userProfile) {
     return (
       <LayoutNavbar>
-        <div className="flex flex-col justify-center items-center min-h-screen">
-          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
-            <p className="text-yellow-700 font-medium">{error}</p>
+        <div className="flex flex-col justify-center items-center min-h-screen px-4">
+          <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md w-full">
+            <p className="text-yellow-700 font-medium text-center">{error}</p>
             <button 
               onClick={() => router.push('/auth/login')}
-              className="mt-3 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+              className="mt-4 w-full bg-blue-700 text-white px-4 py-3 rounded-lg hover:bg-blue-800 transition-colors font-semibold"
             >
               Login Kembali
             </button>
@@ -397,36 +397,36 @@ export default function ProfilePage() {
     <>
       <LayoutNavbar>
         <div className="pt-16 md:pt-20 min-h-screen bg-gray-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+          <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-6 md:py-8">
             {/* Header */}
-            <div className="text-center mb-8">
-              <h1 className="text-3xl font-bold text-gray-900 mb-4">Profile Saya</h1>
-              <p className="text-gray-600 max-w-2xl mx-auto">
+            <div className="text-center mb-6 md:mb-8">
+              <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-3 md:mb-4">Profile Saya</h1>
+              <p className="text-gray-600 max-w-2xl mx-auto text-sm md:text-base px-2">
                 Kelola informasi profile dan {userProfile?.role === 'Student' ? 'status langganan' : 'informasi akun'} Anda
               </p>
             </div>
 
             {/* Main Content - Semua dalam Kolom */}
-            <div className="space-y-6">
+            <div className="space-y-4 md:space-y-6">
               {/* Profile Card */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <div className="flex flex-col md:flex-row items-center gap-6">
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
+                <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
                   {/* Profile Image */}
                   <div className="relative">
                     {imagePreview || userProfile?.profileImage ? (
                       <img
                         src={imagePreview || userProfile?.profileImage}
                         alt="Profile"
-                        className="w-24 h-24 rounded-full object-cover border-2 border-gray-200"
+                        className="w-20 h-20 md:w-24 md:h-24 rounded-full object-cover border-2 border-gray-200"
                       />
                     ) : (
-                      <div className="w-24 h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-2xl font-bold">
+                      <div className="w-20 h-20 md:w-24 md:h-24 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white text-xl md:text-2xl font-bold">
                         {userProfile?.name?.charAt(0) || 'U'}
                       </div>
                     )}
                     {editMode && (
                       <label className="absolute bottom-0 right-0 bg-blue-600 text-white p-1 rounded-full cursor-pointer hover:bg-blue-700 transition-colors">
-                        <Upload className="w-4 h-4" />
+                        <Upload className="w-3 h-3 md:w-4 md:h-4" />
                         <input 
                           type="file" 
                           className="hidden" 
@@ -439,36 +439,40 @@ export default function ProfilePage() {
                   
                   {/* Profile Info */}
                   <div className="flex-1 text-center md:text-left">
-                    <div className="mb-4">
+                    <div className="mb-3 md:mb-4">
                       {editMode ? (
-                        <div className="space-y-3">
+                        <div className="space-y-2 md:space-y-3">
                           <input
                             type="text"
                             value={formData.name}
                             onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                            className="text-xl font-bold text-gray-900 bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full text-center md:text-left"
+                            className="text-lg md:text-xl font-bold text-gray-900 bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full text-center md:text-left py-1"
                             placeholder="Nama lengkap"
                           />
                           <input
                             type="text"
                             value={formData.username}
                             onChange={(e) => setFormData(prev => ({ ...prev, username: e.target.value }))}
-                            className="text-gray-600 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full text-center md:text-left"
+                            className="text-gray-600 text-sm bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full text-center md:text-left py-1"
                             placeholder="Username"
                           />
                         </div>
                       ) : (
                         <div>
-                          <h2 className="text-xl font-bold text-gray-900 mb-1">{userProfile?.name}</h2>
+                          <h2 className="text-lg md:text-xl font-bold text-gray-900 mb-1">{userProfile?.name}</h2>
                           <p className="text-gray-600 text-sm">@{userProfile?.username}</p>
                         </div>
                       )}
                     </div>
 
                     {/* Role Badge */}
-                    <div className="flex flex-col sm:flex-row items-center gap-3 mb-4">
-                      <div className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-${currentRoleConfig.color}-100 text-${currentRoleConfig.color}-800`}>
-                        <currentRoleConfig.icon className="w-4 h-4 mr-1" />
+                    <div className="flex flex-col sm:flex-row items-center gap-2 md:gap-3 mb-3 md:mb-4">
+                      <div className={`inline-flex items-center px-3 py-1 rounded-full text-xs md:text-sm font-medium ${
+                        userProfile?.role === 'Admin' ? 'bg-purple-100 text-purple-800' :
+                        userProfile?.role === 'Teacher' ? 'bg-blue-100 text-blue-800' :
+                        'bg-green-100 text-green-800'
+                      }`}>
+                        <currentRoleConfig.icon className="w-3 h-3 md:w-4 md:h-4 mr-1" />
                         {userProfile?.role}
                       </div>
                       
@@ -490,27 +494,27 @@ export default function ProfilePage() {
 
                     {/* Edit Mode Actions */}
                     {editMode && (
-                      <div className="flex flex-col sm:flex-row gap-3 mt-4">
+                      <div className="flex flex-col sm:flex-row gap-2 md:gap-3 mt-3 md:mt-4">
                         <button
                           onClick={resetEditMode}
-                          className="flex-1 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium border border-gray-300 rounded-lg hover:border-gray-400 flex items-center justify-center gap-2"
+                          className="flex-1 px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium border border-gray-300 rounded-lg hover:border-gray-400 flex items-center justify-center gap-2 text-sm"
                         >
-                          <X className="w-4 h-4" />
+                          <X className="w-3 h-3 md:w-4 md:h-4" />
                           Batal
                         </button>
                         <button
                           onClick={handleUpdateProfile}
                           disabled={updateLoading}
-                          className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                          className="flex-1 bg-blue-600 text-white py-2 px-3 md:px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm"
                         >
                           {updateLoading ? (
                             <>
-                              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                              <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-b-2 border-white"></div>
                               Menyimpan...
                             </>
                           ) : (
                             <>
-                              <Save className="w-4 h-4" />
+                              <Save className="w-3 h-3 md:w-4 md:h-4" />
                               Simpan
                             </>
                           )}
@@ -520,7 +524,7 @@ export default function ProfilePage() {
 
                     {/* Update Message */}
                     {updateMessage && (
-                      <div className={`mt-4 p-3 rounded-lg text-sm ${
+                      <div className={`mt-3 md:mt-4 p-2 md:p-3 rounded-lg text-xs md:text-sm ${
                         updateMessage.includes('berhasil') 
                           ? 'bg-green-100 text-green-700 border border-green-200' 
                           : 'bg-red-100 text-red-700 border border-red-200'
@@ -537,7 +541,7 @@ export default function ProfilePage() {
                         onClick={() => setEditMode(true)}
                         className="text-gray-400 hover:text-gray-600 transition-colors p-2"
                       >
-                        <Edit className="w-5 h-5" />
+                        <Edit className="w-4 h-4 md:w-5 md:h-5" />
                       </button>
                     </div>
                   )}
@@ -545,55 +549,55 @@ export default function ProfilePage() {
               </div>
 
               {/* Contact Information */}
-              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                <h3 className="text-xl font-bold text-gray-900 mb-6">Informasi Kontak</h3>
+              <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
+                <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-6">Informasi Kontak</h3>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
                   {/* Left Column - Personal Info */}
-                  <div className="space-y-6">
-                    <h4 className="font-semibold text-gray-900 mb-4">INFORMASI PRIBADI</h4>
+                  <div className="space-y-4 md:space-y-6">
+                    <h4 className="font-semibold text-gray-900 mb-3 md:mb-4 text-sm md:text-base">INFORMASI PRIBADI</h4>
                     
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6">
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <User className="w-4 h-4 text-gray-500" />
-                          <p className="font-medium text-gray-900">Username</p>
+                        <div className="flex items-center gap-2 mb-1 md:mb-2">
+                          <User className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                          <p className="font-medium text-gray-900 text-sm md:text-base">Username</p>
                         </div>
-                        <p className="text-sm text-gray-600 ml-6">@{userProfile?.username}</p>
+                        <p className="text-xs md:text-sm text-gray-600 ml-5 md:ml-6">@{userProfile?.username}</p>
                       </div>
                       
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Mail className="w-4 h-4 text-gray-500" />
-                          <p className="font-medium text-gray-900">Email</p>
+                        <div className="flex items-center gap-2 mb-1 md:mb-2">
+                          <Mail className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                          <p className="font-medium text-gray-900 text-sm md:text-base">Email</p>
                         </div>
-                        <p className="text-sm text-gray-600 ml-6">{userProfile?.email}</p>
+                        <p className="text-xs md:text-sm text-gray-600 ml-5 md:ml-6">{userProfile?.email}</p>
                       </div>
                       
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Phone className="w-4 h-4 text-gray-500" />
-                          <p className="font-medium text-gray-900">Telepon</p>
+                        <div className="flex items-center gap-2 mb-1 md:mb-2">
+                          <Phone className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                          <p className="font-medium text-gray-900 text-sm md:text-base">Telepon</p>
                         </div>
                         {editMode ? (
                           <input
                             type="text"
                             value={formData.telp}
                             onChange={(e) => setFormData(prev => ({ ...prev, telp: e.target.value }))}
-                            className="text-sm text-gray-600 bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full ml-6"
+                            className="text-xs md:text-sm text-gray-600 bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full ml-5 md:ml-6 py-1"
                             placeholder="Nomor telepon"
                           />
                         ) : (
-                          <p className="text-sm text-gray-600 ml-6">{userProfile?.telp || 'Belum ada nomor telepon'}</p>
+                          <p className="text-xs md:text-sm text-gray-600 ml-5 md:ml-6">{userProfile?.telp || 'Belum ada nomor telepon'}</p>
                         )}
                       </div>
                       
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Calendar className="w-4 h-4 text-gray-500" />
-                          <p className="font-medium text-gray-900">Bergabung</p>
+                        <div className="flex items-center gap-2 mb-1 md:mb-2">
+                          <Calendar className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                          <p className="font-medium text-gray-900 text-sm md:text-base">Bergabung</p>
                         </div>
-                        <p className="text-sm text-gray-600 ml-6">
+                        <p className="text-xs md:text-sm text-gray-600 ml-5 md:ml-6">
                           {new Date(userProfile?.createdAt || '').toLocaleDateString('id-ID', {
                             year: 'numeric',
                             month: 'long',
@@ -605,16 +609,16 @@ export default function ProfilePage() {
                   </div>
 
                   {/* Right Column - Role & Specialization */}
-                  <div className="space-y-6">
-                    <h4 className="font-semibold text-gray-900 mb-4">INFORMASI AKUN</h4>
+                  <div className="space-y-4 md:space-y-6">
+                    <h4 className="font-semibold text-gray-900 mb-3 md:mb-4 text-sm md:text-base">INFORMASI AKUN</h4>
                     
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6">
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <currentRoleConfig.icon className="w-4 h-4 text-gray-500" />
-                          <p className="font-medium text-gray-900">Role</p>
+                        <div className="flex items-center gap-2 mb-1 md:mb-2">
+                          <currentRoleConfig.icon className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                          <p className="font-medium text-gray-900 text-sm md:text-base">Role</p>
                         </div>
-                        <div className="ml-6">
+                        <div className="ml-5 md:ml-6">
                           <p className="text-xs text-gray-500 mb-1">{currentRoleConfig.description}</p>
                         </div>
                       </div>
@@ -622,30 +626,30 @@ export default function ProfilePage() {
                       {/* Specialization untuk Teacher */}
                       {userProfile?.role === 'Teacher' && (
                         <div>
-                          <div className="flex items-center gap-2 mb-2">
-                            <BookOpen className="w-4 h-4 text-gray-500" />
-                            <p className="font-medium text-gray-900">Spesialisasi</p>
+                          <div className="flex items-center gap-2 mb-1 md:mb-2">
+                            <BookOpen className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                            <p className="font-medium text-gray-900 text-sm md:text-base">Spesialisasi</p>
                           </div>
                           {editMode ? (
                             <input
                               type="text"
                               value={formData.specialization}
                               onChange={(e) => setFormData(prev => ({ ...prev, specialization: e.target.value }))}
-                              className="text-sm text-gray-600 bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full ml-6"
+                              className="text-xs md:text-sm text-gray-600 bg-transparent border-b border-gray-300 focus:outline-none focus:border-blue-500 w-full ml-5 md:ml-6 py-1"
                               placeholder="Contoh: UI/UX Design, Web Development"
                             />
                           ) : (
-                            <p className="text-sm text-gray-600 ml-6">{userProfile?.specialization || 'Belum ada spesialisasi'}</p>
+                            <p className="text-xs md:text-sm text-gray-600 ml-5 md:ml-6">{userProfile?.specialization || 'Belum ada spesialisasi'}</p>
                           )}
                         </div>
                       )}
                       
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <CheckCircle className="w-4 h-4 text-gray-500" />
-                          <p className="font-medium text-gray-900">Status Verifikasi</p>
+                        <div className="flex items-center gap-2 mb-1 md:mb-2">
+                          <CheckCircle className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                          <p className="font-medium text-gray-900 text-sm md:text-base">Status Verifikasi</p>
                         </div>
-                        <div className="ml-6">
+                        <div className="ml-5 md:ml-6">
                           {userProfile?.verified_at ? (
                             <div className="flex items-center gap-2">
                               <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-green-100 text-green-800">
@@ -664,11 +668,11 @@ export default function ProfilePage() {
                       </div>
                       
                       <div>
-                        <div className="flex items-center gap-2 mb-2">
-                          <Clock className="w-4 h-4 text-gray-500" />
-                          <p className="font-medium text-gray-900">Terakhir Diperbarui</p>
+                        <div className="flex items-center gap-2 mb-1 md:mb-2">
+                          <Clock className="w-3 h-3 md:w-4 md:h-4 text-gray-500" />
+                          <p className="font-medium text-gray-900 text-sm md:text-base">Terakhir Diperbarui</p>
                         </div>
-                        <p className="text-sm text-gray-600 ml-6">
+                        <p className="text-xs md:text-sm text-gray-600 ml-5 md:ml-6">
                           {new Date(userProfile?.updatedAt || '').toLocaleDateString('id-ID', {
                             year: 'numeric',
                             month: 'long',
@@ -685,17 +689,17 @@ export default function ProfilePage() {
 
               {/* Subscription Section - Hanya untuk Student */}
               {userProfile?.role === 'Student' && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-6">Status Langganan</h3>
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-4 md:mb-6">Status Langganan</h3>
                   
                   {hasActiveSubscription ? (
-                    <div className="space-y-6">
-                      <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                        <div className="flex items-center gap-3">
-                          <CheckCircle className="w-6 h-6 text-green-600" />
+                    <div className="space-y-4 md:space-y-6">
+                      <div className="bg-green-50 border border-green-200 rounded-lg p-3 md:p-4">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <CheckCircle className="w-4 h-4 md:w-6 md:h-6 text-green-600" />
                           <div>
-                            <h4 className="font-semibold text-green-900">Langganan Aktif</h4>
-                            <p className="text-green-700 text-sm">
+                            <h4 className="font-semibold text-green-900 text-sm md:text-base">Langganan Aktif</h4>
+                            <p className="text-green-700 text-xs md:text-sm">
                               Berlaku hingga {new Date(userProfile!.subscriptionExpiredAt!).toLocaleDateString('id-ID', {
                                 weekday: 'long',
                                 year: 'numeric',
@@ -707,38 +711,38 @@ export default function ProfilePage() {
                         </div>
                       </div>
 
-                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                      <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 md:p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <h4 className="font-semibold text-blue-900">Sisa Waktu</h4>
-                            <p className="text-blue-700 text-sm">
+                            <h4 className="font-semibold text-blue-900 text-sm md:text-base">Sisa Waktu</h4>
+                            <p className="text-blue-700 text-xs md:text-sm">
                               {subscriptionDaysLeft} hari lagi
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="text-2xl font-bold text-blue-600">{subscriptionDaysLeft}</p>
-                            <p className="text-blue-600 text-sm">hari</p>
+                            <p className="text-xl md:text-2xl font-bold text-blue-600">{subscriptionDaysLeft}</p>
+                            <p className="text-blue-600 text-xs md:text-sm">hari</p>
                           </div>
                         </div>
                       </div>
 
                       <button 
                         onClick={() => router.push('/mycourse')}
-                        className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center gap-2"
+                        className="w-full bg-blue-700 text-white py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                       >
-                        <ArrowRight className="w-5 h-5" />
+                        <ArrowRight className="w-4 h-4 md:w-5 md:h-5" />
                         Mulai Belajar Sekarang
                       </button>
                     </div>
                   ) : (
-                    <div className="space-y-6">
+                    <div className="space-y-4 md:space-y-6">
                       {/* Warning Message */}
-                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
-                        <div className="flex items-center gap-3">
-                          <AlertCircle className="w-6 h-6 text-yellow-600" />
+                      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3 md:p-4">
+                        <div className="flex items-center gap-2 md:gap-3">
+                          <AlertCircle className="w-4 h-4 md:w-6 md:h-6 text-yellow-600" />
                           <div>
-                            <h4 className="font-semibold text-yellow-900">Belum Berlangganan</h4>
-                            <p className="text-yellow-700 text-sm">
+                            <h4 className="font-semibold text-yellow-900 text-sm md:text-base">Belum Berlangganan</h4>
+                            <p className="text-yellow-700 text-xs md:text-sm">
                               Anda perlu berlangganan untuk mengakses semua kursus premium
                             </p>
                           </div>
@@ -747,93 +751,93 @@ export default function ProfilePage() {
 
                       {/* Tampilkan paket berlangganan atau form redeem */}
                       {!showRedeemForm && !showSubscriptionPlans ? (
-                        <div className="text-center space-y-6">
-                          <div className="bg-gradient-to-r from-purple-500 to-pink-500 rounded-lg p-6 text-white">
-                            <Crown className="w-12 h-12 mx-auto mb-3" />
-                            <h4 className="font-bold text-lg mb-2">Akses Semua Kursus Premium</h4>
-                            <p className="text-purple-100 text-sm">
+                        <div className="text-center space-y-4 md:space-y-6">
+                          <div className="bg-gradient-to-r bg-purple-500 rounded-lg p-4 md:p-6 text-white">
+                            <Crown className="w-8 h-8 md:w-12 md:h-12 mx-auto mb-2 md:mb-3" />
+                            <h4 className="font-bold text-base md:text-lg mb-1 md:mb-2">Akses Semua Kursus Premium</h4>
+                            <p className="text-purple-100 text-xs md:text-sm">
                               Berlangganan untuk mendapatkan akses ke semua materi pembelajaran
                             </p>
                           </div>
 
-                          <div className="flex flex-col sm:flex-row gap-3">
+                          <div className="flex flex-col sm:flex-row gap-2 md:gap-3">
                             <button 
                               onClick={() => setShowSubscriptionPlans(true)}
-                              className="flex-1 bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                              className="flex-1 bg-blue-600 text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                             >
-                              <Zap className="w-5 h-5" />
+                              <Zap className="w-4 h-4 md:w-5 md:h-5" />
                               Lihat Paket Berlangganan
                             </button>
                             <button 
                               onClick={() => setShowRedeemForm(true)}
-                              className="flex-1 border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                              className="flex-1 border border-gray-300 text-gray-700 py-2 md:py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                             >
-                              <Award className="w-5 h-5" />
+                              <Award className="w-4 h-4 md:w-5 md:h-5" />
                               Redeem Kode
                             </button>
                           </div>
                         </div>
                       ) : showSubscriptionPlans ? (
-                        // Tampilkan Paket Berlangganan - 3 CARD DALAM SATU BARIS YANG RESPONSIF
-                        <div className="space-y-6">
+                        // Tampilkan Paket Berlangganan
+                        <div className="space-y-4 md:space-y-6">
                           <div className="text-center">
-                            <h4 className="text-xl font-bold text-gray-900 mb-2">Pilih Paket Berlangganan</h4>
-                            <p className="text-gray-600 text-sm max-w-2xl mx-auto">
+                            <h4 className="text-lg md:text-xl font-bold text-gray-900 mb-1 md:mb-2">Pilih Paket Berlangganan</h4>
+                            <p className="text-gray-600 text-xs md:text-sm max-w-2xl mx-auto px-2">
                               Akses semua materi premium dengan paket berlangganan terjangkau. Pilih paket yang sesuai dengan kebutuhan belajar Anda.
                             </p>
                           </div>
 
                           {/* Container untuk 3 card paket berlangganan */}
-                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                             {plans.map((plan, index) => (
                               <div
                                 key={index}
-                                className={`bg-white rounded-xl p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 ${
+                                className={`bg-white rounded-xl p-4 md:p-6 shadow-lg border-2 hover:shadow-xl transition-all duration-300 ${
                                   plan.popular 
                                     ? 'border-blue-600 relative transform hover:-translate-y-1' 
                                     : 'border-gray-200 hover:border-blue-300'
                                 }`}
                               >
                                 {plan.popular && (
-                                  <div className="absolute -top-3 left-1/2 transform -translate-x-1/2">
-                                    <span className="bg-blue-600 text-white px-4 py-1 rounded-full text-sm font-semibold shadow-md">
+                                  <div className="absolute -top-2 md:-top-3 left-1/2 transform -translate-x-1/2">
+                                    <span className="bg-blue-600 text-white px-3 py-1 rounded-full text-xs md:text-sm font-semibold shadow-md">
                                       Paling Populer
                                     </span>
                                   </div>
                                 )}
                                 
-                                <div className="text-center mb-6">
-                                  <h3 className="text-xl font-bold text-gray-800 mb-3">{plan.name}</h3>
-                                  <div className="flex flex-col items-center gap-2 mb-3">
-                                    <div className="flex items-baseline gap-2">
-                                      <span className="text-lg line-through text-gray-400">{plan.originalPrice}</span>
-                                      <span className="text-3xl font-bold text-blue-600">{plan.price}</span>
+                                <div className="text-center mb-4 md:mb-6">
+                                  <h3 className="text-lg md:text-xl font-bold text-gray-800 mb-2 md:mb-3">{plan.name}</h3>
+                                  <div className="flex flex-col items-center gap-1 md:gap-2 mb-2 md:mb-3">
+                                    <div className="flex items-baseline gap-1 md:gap-2">
+                                      <span className="text-sm md:text-lg line-through text-gray-400">{plan.originalPrice}</span>
+                                      <span className="text-xl md:text-3xl font-bold text-blue-600">{plan.price}</span>
                                     </div>
-                                    <span className="bg-red-100 text-red-600 px-3 py-1 rounded-full text-sm font-semibold">
+                                    <span className="bg-red-100 text-red-600 px-2 py-1 rounded-full text-xs md:text-sm font-semibold">
                                       Hemat {plan.discount}
                                     </span>
                                   </div>
-                                  <p className="text-gray-600 font-semibold">{plan.duration} Akses Penuh</p>
+                                  <p className="text-gray-600 font-semibold text-sm">{plan.duration} Akses Penuh</p>
                                 </div>
 
-                                <div className="mb-4 p-3 bg-blue-50 rounded-lg text-center border border-blue-100">
-                                  <p className="text-blue-700 font-semibold text-sm">
+                                <div className="mb-3 md:mb-4 p-2 md:p-3 bg-blue-50 rounded-lg text-center border border-blue-100">
+                                  <p className="text-blue-700 font-semibold text-xs md:text-sm">
                                     ✅ Akses ke SEMUA Materi Pembelajaran
                                   </p>
                                 </div>
 
-                                <ul className="space-y-3 mb-6">
+                                <ul className="space-y-2 md:space-y-3 mb-4 md:mb-6">
                                   {plan.features.map((feature, idx) => (
-                                    <li key={idx} className="flex items-start gap-3 text-gray-600">
-                                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
-                                      <span className="text-sm leading-relaxed">{feature}</span>
+                                    <li key={idx} className="flex items-start gap-2 md:gap-3 text-gray-600">
+                                      <CheckCircle className="w-4 h-4 md:w-5 md:h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                                      <span className="text-xs md:text-sm leading-relaxed">{feature}</span>
                                     </li>
                                   ))}
                                 </ul>
 
                                 <button 
                                   onClick={() => handlePackageSelect(plan.link)}
-                                  className={`w-full py-4 rounded-xl font-semibold transition-all duration-300 ${
+                                  className={`w-full py-3 md:py-4 rounded-xl font-semibold transition-all duration-300 text-sm md:text-base ${
                                     plan.popular
                                       ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-lg hover:shadow-xl'
                                       : 'bg-gray-100 text-gray-800 hover:bg-gray-200 hover:shadow-md'
@@ -846,11 +850,11 @@ export default function ProfilePage() {
                           </div>
 
                           {/* Info Diskon */}
-                          <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-4 text-center">
-                            <p className="text-green-700 font-semibold">
+                          <div className="bg-gradient-to-r from-green-50 to-blue-50 border border-green-200 rounded-lg p-3 md:p-4 text-center">
+                            <p className="text-green-700 font-semibold text-sm md:text-base">
                               💫 Spesial Diskon 70%! Akses semua materi dengan harga terjangkau
                             </p>
-                            <p className="text-green-600 text-sm mt-1">
+                            <p className="text-green-600 text-xs md:text-sm mt-1">
                               Dapatkan kesempatan menjadi Brand Ambassador dan berbagai benefit eksklusif lainnya
                             </p>
                           </div>
@@ -858,18 +862,18 @@ export default function ProfilePage() {
                           <div className="text-center">
                             <button 
                               onClick={() => setShowSubscriptionPlans(false)}
-                              className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-2 justify-center mx-auto transition-colors"
+                              className="text-blue-600 hover:text-blue-800 font-medium flex items-center gap-2 justify-center mx-auto transition-colors text-sm"
                             >
-                              <ArrowRight className="w-4 h-4 transform rotate-180" />
+                              <ArrowRight className="w-3 h-3 md:w-4 md:h-4 transform rotate-180" />
                               Kembali ke Status Langganan
                             </button>
                           </div>
                         </div>
                       ) : (
                         // Tampilkan Form Redeem
-                        <div className="space-y-4">
+                        <div className="space-y-3 md:space-y-4">
                           <div className="flex justify-between items-center">
-                            <h4 className="font-semibold text-gray-900">Masukkan Kode Redeem</h4>
+                            <h4 className="font-semibold text-gray-900 text-sm md:text-base">Masukkan Kode Redeem</h4>
                             <button 
                               onClick={() => {
                                 setShowRedeemForm(false)
@@ -878,13 +882,13 @@ export default function ProfilePage() {
                               }}
                               className="text-gray-400 hover:text-gray-600"
                             >
-                              <X className="w-5 h-5" />
+                              <X className="w-4 h-4 md:w-5 md:h-5" />
                             </button>
                           </div>
                           
-                          <div className="space-y-3">
+                          <div className="space-y-2 md:space-y-3">
                             <div>
-                              <label htmlFor="redeemCode" className="block text-sm font-medium text-gray-700 mb-2">
+                              <label htmlFor="redeemCode" className="block text-sm font-medium text-gray-700 mb-1 md:mb-2">
                                 Kode Redeem
                               </label>
                               <input
@@ -893,13 +897,13 @@ export default function ProfilePage() {
                                 value={redeemCode}
                                 onChange={(e) => setRedeemCode(e.target.value.toUpperCase())}
                                 placeholder="Contoh: PYQ01AIK"
-                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent text-sm md:text-base"
                                 disabled={redeemLoading}
                               />
                             </div>
 
                             {redeemMessage && (
-                              <div className={`p-3 rounded-lg text-sm ${
+                              <div className={`p-2 md:p-3 rounded-lg text-xs md:text-sm ${
                                 redeemMessage.includes('berhasil') 
                                   ? 'bg-green-100 text-green-700 border border-green-200' 
                                   : 'bg-red-100 text-red-700 border border-red-200'
@@ -909,14 +913,14 @@ export default function ProfilePage() {
                             )}
                           </div>
 
-                          <div className="flex gap-3">
+                          <div className="flex gap-2 md:gap-3">
                             <button
                               onClick={() => {
                                 setShowRedeemForm(false)
                                 setRedeemMessage('')
                                 setRedeemCode('')
                               }}
-                              className="flex-1 px-4 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium border border-gray-300 rounded-lg hover:border-gray-400"
+                              className="flex-1 px-3 py-2 text-gray-600 hover:text-gray-800 transition-colors font-medium border border-gray-300 rounded-lg hover:border-gray-400 text-sm"
                               disabled={redeemLoading}
                             >
                               Batal
@@ -924,16 +928,16 @@ export default function ProfilePage() {
                             <button
                               onClick={handleRedeemCode}
                               disabled={redeemLoading}
-                              className="flex-1 bg-green-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50"
+                              className="flex-1 bg-green-600 text-white py-2 px-3 md:px-4 rounded-lg font-semibold hover:bg-green-700 transition-colors flex items-center justify-center gap-2 disabled:opacity-50 text-sm"
                             >
                               {redeemLoading ? (
                                 <>
-                                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                  <div className="animate-spin rounded-full h-3 w-3 md:h-4 md:w-4 border-b-2 border-white"></div>
                                   Memproses...
                                 </>
                               ) : (
                                 <>
-                                  <CheckCircle className="w-4 h-4" />
+                                  <CheckCircle className="w-3 h-3 md:w-4 md:h-4" />
                                   Aktifkan Subscription
                                 </>
                               )}
@@ -948,20 +952,28 @@ export default function ProfilePage() {
 
               {/* Dashboard untuk Teacher dan Admin */}
               {(userProfile?.role === 'Teacher' || userProfile?.role === 'Admin') && (
-                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-                  <h3 className="text-xl font-bold text-gray-900 mb-4">
+                <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4 md:p-6">
+                  <h3 className="text-lg md:text-xl font-bold text-gray-900 mb-3 md:mb-4">
                     {userProfile?.role === 'Teacher' ? 'Dashboard Pengajar' : 'Dashboard Admin'}
                   </h3>
                   
-                  <div className="space-y-4">
-                    <div className={`bg-${currentRoleConfig.color}-50 border border-${currentRoleConfig.color}-200 rounded-lg p-4`}>
-                      <div className="flex items-center gap-3">
-                        <currentRoleConfig.icon className={`w-6 h-6 text-${currentRoleConfig.color}-600`} />
+                  <div className="space-y-3 md:space-y-4">
+                    <div className={`${
+                      userProfile?.role === 'Admin' ? 'bg-purple-50 border-purple-200' : 'bg-blue-50 border-blue-200'
+                    } border rounded-lg p-3 md:p-4`}>
+                      <div className="flex items-center gap-2 md:gap-3">
+                        <currentRoleConfig.icon className={`w-4 h-4 md:w-6 md:h-6 ${
+                          userProfile?.role === 'Admin' ? 'text-purple-600' : 'text-blue-600'
+                        }`} />
                         <div>
-                          <h4 className={`font-semibold text-${currentRoleConfig.color}-900`}>
+                          <h4 className={`font-semibold ${
+                            userProfile?.role === 'Admin' ? 'text-purple-900' : 'text-blue-900'
+                          } text-sm md:text-base`}>
                             {userProfile?.role === 'Teacher' ? 'Status Pengajar' : 'Status Administrator'}
                           </h4>
-                          <p className={`text-${currentRoleConfig.color}-700 text-sm`}>
+                          <p className={`${
+                            userProfile?.role === 'Admin' ? 'text-purple-700' : 'text-blue-700'
+                          } text-xs md:text-sm`}>
                             {userProfile?.role === 'Teacher' 
                               ? 'Anda memiliki akses penuh untuk mengelola kelas dan materi pembelajaran'
                               : 'Anda memiliki akses penuh untuk mengelola sistem dan pengguna'
@@ -976,9 +988,9 @@ export default function ProfilePage() {
                         <>
                           <button 
                             onClick={() => router.push('/teacher/classes')}
-                            className="bg-blue-600 text-white py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2"
+                            className="bg-blue-600 text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                           >
-                            <BookOpen className="w-5 h-5" />
+                            <BookOpen className="w-4 h-4 md:w-5 md:h-5" />
                             Kelola Kelas
                           </button>
                         </>
@@ -986,16 +998,16 @@ export default function ProfilePage() {
                         <>
                           <button 
                             onClick={() => router.push('/admin/users')}
-                            className="bg-purple-600 text-white py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+                            className="bg-purple-600 text-white py-2 md:py-3 rounded-lg font-semibold hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                           >
-                            <User className="w-5 h-5" />
+                            <User className="w-4 h-4 md:w-5 md:h-5" />
                             Kelola Pengguna
                           </button>
                           <button 
                             onClick={() => router.push('/admin/dashboard')}
-                            className="border border-gray-300 text-gray-700 py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2"
+                            className="border border-gray-300 text-gray-700 py-2 md:py-3 rounded-lg font-semibold hover:bg-gray-50 transition-colors flex items-center justify-center gap-2 text-sm md:text-base"
                           >
-                            <Crown className="w-5 h-5" />
+                            <Crown className="w-4 h-4 md:w-5 md:h-5" />
                             Dashboard Admin
                           </button>
                         </>

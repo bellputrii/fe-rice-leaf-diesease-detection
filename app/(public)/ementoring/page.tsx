@@ -363,7 +363,7 @@ export default function EMentoringPage() {
               <div className="flex justify-center lg:justify-end order-1 lg:order-2">
                 <div className="relative w-full max-w-sm">
                   <Image
-                    src="/e-learning.png"
+                    src="/ementoring.jpg"
                     alt="E-Mentoring Session"
                     width={400}
                     height={300}

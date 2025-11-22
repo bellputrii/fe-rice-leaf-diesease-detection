@@ -370,7 +370,7 @@ export default function NavBar() {
     } else if (userRole === 'admin') {
       return 'bg-blue-50 border-blue-200';
     } else if (userRole === 'student' && hasSubscription && !subscriptionLoading) {
-      return 'bg-green-50 border-green-200';
+      return 'bg-blue-50 border-blue-200';
     }
     return '';
   };
@@ -395,11 +395,11 @@ export default function NavBar() {
       };
     } else if (userRole === 'student' && hasSubscription && !subscriptionLoading) {
       return {
-        primary: 'green',
-        text: 'text-green-800',
-        bg: 'bg-green-100',
-        hoverBg: 'bg-green-200',
-        button: 'bg-green-600 hover:bg-green-700'
+        primary: 'blue',
+        text: 'text-blue-800',
+        bg: 'bg-blue-100',
+        hoverBg: 'bg-blue-200',
+        button: 'bg-blue-600 hover:bg-blue-700'
       };
     }
     return {
@@ -455,12 +455,12 @@ export default function NavBar() {
             : "bg-white shadow-sm border-b border-gray-200 py-3"
         } ${getNavbarStyle()}`}
       >
-        <div className="mx-auto flex items-center justify-between px-4 sm:px-6 lg:px-8 max-w-7xl">
+        <div className="mx-auto flex items-center justify-between px-3 sm:px-6 lg:px-8 max-w-7xl">
           {/* Logo */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             <Link 
               href={getLogoHref()}
-              className="flex items-center gap-3 no-underline"
+              className="flex items-center gap-2 sm:gap-3 no-underline"
             >
               <div className={`relative flex items-center justify-center ${
                 isScrolled ? "w-8 h-8" : "w-10 h-10"
@@ -473,19 +473,21 @@ export default function NavBar() {
                   className="object-contain"
                 />
               </div>
-              <span className={`font-bold transition-all duration-300 ${
-                isScrolled ? "text-xl" : "text-xl"
-              } ${roleColors.text}`}>
-                Ambil Prestasi
+              <div className="flex flex-col">
+                <span className={`font-bold transition-all duration-300 ${
+                  isScrolled ? "text-lg" : "text-xl"
+                } ${roleColors.text}`}>
+                  Ambil Prestasi
+                </span>
                 {userRole && (
-                  <span className="text-sm font-normal ml-2">
+                  <span className="text-xs text-gray-500 leading-none mt-1">
                     {userRole === 'teacher' && '(Teacher)'}
                     {userRole === 'admin' && '(Admin)'}
                     {userRole === 'student' && hasSubscription && !subscriptionLoading && '(Student Premium)'}
                     {userRole === 'student' && (!hasSubscription || subscriptionLoading) && '(Student)'}
                   </span>
                 )}
-              </span>
+              </div>
             </Link>
           </div>
 
@@ -508,13 +510,13 @@ export default function NavBar() {
           </div>
 
           {/* Auth Buttons & Profile Section */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 sm:gap-3">
             {isLoggedIn ? (
               // Tampilan ketika user sudah login
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 sm:gap-3">
                 {/* Badge Status Subscription untuk Student */}
                 {userRole === 'student' && !subscriptionLoading && (
-                  <div className={`px-3 py-1 rounded-full text-xs font-medium ${
+                  <div className={`hidden sm:flex px-3 py-1 rounded-full text-xs font-medium ${
                     hasSubscription 
                       ? 'bg-green-100 text-green-800 border border-green-200' 
                       : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
@@ -527,7 +529,7 @@ export default function NavBar() {
                 <div className="relative group">
                   <button 
                     onClick={handleProfileClick}
-                    className={`flex items-center gap-2 p-2 rounded-lg transition-colors cursor-pointer ${roleColors.bg} hover:${roleColors.hoverBg} ${roleColors.text}`}
+                    className={`flex items-center gap-2 p-1.5 sm:p-2 rounded-lg transition-colors cursor-pointer ${roleColors.bg} hover:${roleColors.hoverBg} ${roleColors.text}`}
                   >
                     <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-medium ${
                       userRole === 'teacher' ? "bg-blue-700" : 
@@ -552,14 +554,14 @@ export default function NavBar() {
                   {/* Dropdown Menu */}
                   <div className="absolute right-0 top-full mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-200 py-2 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50">
                     <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-sm font-medium text-gray-900">
+                      <p className="text-sm font-medium text-gray-900 truncate">
                         {userData?.name || (
                           userRole === 'teacher' ? 'Teacher Profile' : 
                           userRole === 'admin' ? 'Admin Profile' : 
                           'Student Profile'
                         )}
                       </p>
-                      <p className="text-xs text-gray-500 mt-1">
+                      <p className="text-xs text-gray-500 mt-1 truncate">
                         @{userData?.username || userRole}
                       </p>
                       <p className="text-xs text-gray-400 mt-1 capitalize">
@@ -584,14 +586,14 @@ export default function NavBar() {
                             dropdown.classList.remove('group-hover:opacity-100', 'group-hover:visible');
                           }
                         }}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors w-full"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-md transition-colors w-full text-left"
                       >
                         <User size={16} />
                         <span>Profile Saya</span>
                       </button>
                       <button
                         onClick={showLogoutConfirmation}
-                        className="flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors w-full"
+                        className="flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded-md transition-colors w-full text-left"
                       >
                         <LogOut size={16} />
                         <span>Logout</span>
@@ -632,46 +634,46 @@ export default function NavBar() {
 
         {/* Mobile Menu */}
         {isOpen && (
-          <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg">
-            <div className="px-4 py-3 space-y-1">
+          <div className="md:hidden absolute top-full left-0 right-0 bg-white border-t border-gray-200 shadow-lg max-h-[80vh] overflow-y-auto">
+            <div className="px-3 py-2 space-y-1">
+              {/* Status Subscription untuk Student di Mobile */}
+              {isLoggedIn && userRole === 'student' && !subscriptionLoading && (
+                <div className={`px-3 py-2 rounded-lg text-sm font-medium mb-2 ${
+                  hasSubscription 
+                    ? 'bg-green-100 text-green-800 border border-green-200' 
+                    : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
+                }`}>
+                  Status: {hasSubscription ? 'Premium' : 'Free'}
+                </div>
+              )}
+
               {menuItems.map((item, index) => (
                 <Link
                   key={index}
                   href={item.href}
                   onClick={() => setIsOpen(false)}
-                  className={`flex items-center gap-3 py-3 px-4 rounded-lg transition-all ${
+                  className={`flex items-center gap-3 py-3 px-3 rounded-lg transition-all ${
                     isActiveLink(item.href)
                       ? `${roleColors.button} text-white`
                       : "text-gray-700 hover:bg-gray-100"
                   }`}
                 >
                   {item.icon}
-                  <span className="font-medium">{item.name}</span>
+                  <span className="font-medium text-sm">{item.name}</span>
                 </Link>
               ))}
               
               {/* Auth Buttons di Mobile */}
-              <div className="border-t border-gray-200 pt-3 mt-3 space-y-2">
+              <div className="border-t border-gray-200 pt-2 mt-2 space-y-1">
                 {isLoggedIn ? (
                   // Mobile menu ketika login
                   <>
-                    {/* Status Subscription untuk Student di Mobile */}
-                    {userRole === 'student' && !subscriptionLoading && (
-                      <div className={`px-3 py-2 rounded-lg text-sm font-medium ${
-                        hasSubscription 
-                          ? 'bg-green-100 text-green-800 border border-green-200' 
-                          : 'bg-yellow-100 text-yellow-800 border border-yellow-200'
-                      }`}>
-                        Status: {hasSubscription ? 'Premium' : 'Free'}
-                      </div>
-                    )}
-
                     <div 
                       onClick={() => {
                         handleProfileClick();
                         setIsOpen(false);
                       }}
-                      className="flex items-center gap-3 py-3 px-4 rounded-lg bg-gray-100 border border-gray-200 cursor-pointer hover:bg-gray-200 transition-all"
+                      className="flex items-center gap-3 py-3 px-3 rounded-lg bg-gray-100 border border-gray-200 cursor-pointer hover:bg-gray-200 transition-all"
                     >
                       <div className={`w-8 h-8 rounded-full flex items-center justify-center text-white ${
                         userRole === 'teacher' ? "bg-blue-700" : 
@@ -684,26 +686,16 @@ export default function NavBar() {
                           <User size={16} />
                         )}
                       </div>
-                      <div>
-                        <p className="text-sm font-medium text-gray-900">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">
                           {userData?.name || (
                             userRole === 'teacher' ? 'Teacher Profile' : 
                             userRole === 'admin' ? 'Admin Profile' : 
                             'Student Profile'
                           )}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-500 truncate">
                           @{userData?.username || userRole}
-                        </p>
-                        <p className="text-xs text-gray-400 capitalize">
-                          Role: {userRole}
-                          {userRole === 'student' && !subscriptionLoading && (
-                            <span className={`ml-1 ${
-                              hasSubscription ? 'text-green-600' : 'text-yellow-600'
-                            }`}>
-                              ({hasSubscription ? 'Premium' : 'Free'})
-                            </span>
-                          )}
                         </p>
                       </div>
                     </div>
@@ -713,10 +705,10 @@ export default function NavBar() {
                         setIsOpen(false);
                         showLogoutConfirmation();
                       }}
-                      className="flex items-center gap-3 py-3 px-4 rounded-lg text-red-600 hover:bg-red-50 transition-all w-full text-left"
+                      className="flex items-center gap-3 py-3 px-3 rounded-lg text-red-600 hover:bg-red-50 transition-all w-full text-left"
                     >
                       <LogOut size={18} />
-                      <span className="font-medium">Logout</span>
+                      <span className="font-medium text-sm">Logout</span>
                     </button>
                   </>
                 ) : (
@@ -725,18 +717,18 @@ export default function NavBar() {
                     <Link
                       href="/auth/login"
                       onClick={() => setIsOpen(false)}
-                      className="flex items-center gap-3 py-3 px-4 rounded-lg text-gray-700 hover:bg-gray-100 transition-all"
+                      className="flex items-center gap-3 py-3 px-3 rounded-lg text-gray-700 hover:bg-gray-100 transition-all"
                     >
                       <LogIn size={18} />
-                      <span className="font-medium">Login</span>
+                      <span className="font-medium text-sm">Login</span>
                     </Link>
                     <Link
                       href="/auth/login?tab=register"
                       onClick={() => setIsOpen(false)}
-                      className={`flex items-center gap-3 py-3 px-4 rounded-lg text-white transition-all ${roleColors.button}`}
+                      className={`flex items-center gap-3 py-3 px-3 rounded-lg text-white transition-all ${roleColors.button}`}
                     >
                       <UserPlus size={18} />
-                      <span className="font-medium">Daftar</span>
+                      <span className="font-medium text-sm">Daftar</span>
                     </Link>
                   </>
                 )}
@@ -748,8 +740,8 @@ export default function NavBar() {
 
       {/* Logout Confirmation Modal */}
       {showLogoutConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-xl shadow-xl p-6 mx-4 max-w-sm w-full">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="bg-white rounded-xl shadow-xl p-6 w-full max-w-sm">
             <div className="text-center">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
                 <LogOut className="w-6 h-6 text-red-600" />
@@ -763,7 +755,7 @@ export default function NavBar() {
               <div className="flex gap-3">
                 <button
                   onClick={closeLogoutConfirmation}
-                  className="flex-1 py-2.5 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="flex-1 py-2.5 px-4 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium text-sm"
                   disabled={isLoggingOut}
                 >
                   Batal
@@ -771,7 +763,7 @@ export default function NavBar() {
                 <button
                   onClick={handleLogout}
                   disabled={isLoggingOut}
-                  className="flex-1 py-2.5 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 font-medium flex items-center justify-center gap-2"
+                  className="flex-1 py-2.5 px-4 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 font-medium text-sm flex items-center justify-center gap-2"
                 >
                   {isLoggingOut ? (
                     <>

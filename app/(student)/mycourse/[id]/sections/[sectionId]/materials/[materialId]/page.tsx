@@ -12,7 +12,9 @@ import {
   Video,
   Download,
   FileText,
-  BarChart3
+  BarChart3,
+  Menu,
+  X
 } from 'lucide-react'
 
 interface MaterialDetail {
@@ -62,6 +64,7 @@ export default function MaterialDetailPage() {
   const [error, setError] = useState<string | null>(null)
   const [activeTab, setActiveTab] = useState<'content' | 'video' | 'resources' | 'quizzes'>('content')
   const [isCompleted, setIsCompleted] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   // Fetch material detail
   const fetchMaterialDetail = async () => {
@@ -155,7 +158,7 @@ export default function MaterialDetailPage() {
   if (loading) {
     return (
       <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
         <span className="ml-3 text-gray-600">Memuat detail materi...</span>
       </div>
     )
@@ -165,16 +168,16 @@ export default function MaterialDetailPage() {
     return (
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
         <p className="text-yellow-700 font-medium">{error}</p>
-        <div className="flex gap-2 mt-4">
+        <div className="flex flex-col sm:flex-row gap-2 mt-4">
           <button 
             onClick={fetchMaterialDetail}
-            className="bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors"
           >
             Coba Lagi
           </button>
           <button
             onClick={() => router.push(`/mycourse/${classId}/sections/${sectionId}`)}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition-colors"
+            className="bg-gray-600 text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
           >
             Kembali ke Section
           </button>
@@ -186,12 +189,12 @@ export default function MaterialDetailPage() {
   if (!materialDetail) {
     return (
       <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-        <BookOpen className="w-16 h-16 text-yellow-400 mx-auto mb-4" />
+        <BookOpen className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
         <h3 className="text-lg font-semibold text-yellow-800 mb-2">Materi Tidak Ditemukan</h3>
         <p className="text-yellow-700 mb-4">Materi yang Anda cari tidak ditemukan.</p>
         <button
           onClick={() => router.push(`/mycourse/${classId}/sections/${sectionId}`)}
-          className="bg-blue-700 text-white px-6 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+          className="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
         >
           Kembali ke Section
         </button>
@@ -205,14 +208,14 @@ export default function MaterialDetailPage() {
       <div className="flex items-center gap-4 mb-6">
         <button
           onClick={() => router.push(`/mycourse/${classId}/sections/${sectionId}`)}
-          className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors"
+          className="flex items-center gap-2 text-gray-600 hover:text-gray-800 transition-colors"
         >
           <ChevronLeft className="w-5 h-5" />
-          Kembali ke Section
+          <span className="hidden sm:inline">Kembali ke Section</span>
         </button>
         <div className="flex-1">
-          <h1 className="text-2xl font-bold text-gray-900">{materialDetail.title}</h1>
-          <div className="flex items-center gap-4 mt-2 text-sm text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">{materialDetail.title}</h1>
+          <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 text-sm text-gray-600">
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4" />
               <span>15 min</span>
@@ -229,23 +232,34 @@ export default function MaterialDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+          className="lg:hidden bg-blue-600 text-white p-2 rounded-lg"
+        >
+          {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+        </button>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Sidebar - Navigation */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-24">
+        <div className={`lg:col-span-1 ${mobileMenuOpen ? 'block' : 'hidden lg:block'}`}>
+          <div className="bg-white rounded-lg shadow-sm border border-gray-200 lg:sticky lg:top-24">
             <div className="p-4 border-b border-gray-200">
               <h3 className="font-semibold text-gray-900">Navigasi Materi</h3>
             </div>
             
             <div className="p-4 space-y-2">
               <button
-                onClick={() => setActiveTab('content')}
+                onClick={() => {
+                  setActiveTab('content')
+                  setMobileMenuOpen(false)
+                }}
                 className={`w-full text-left p-3 rounded-lg transition-colors flex items-center gap-3 ${
                   activeTab === 'content'
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <FileText className="w-5 h-5" />
@@ -253,11 +267,14 @@ export default function MaterialDetailPage() {
               </button>
 
               <button
-                onClick={() => setActiveTab('video')}
+                onClick={() => {
+                  setActiveTab('video')
+                  setMobileMenuOpen(false)
+                }}
                 className={`w-full text-left p-3 rounded-lg transition-colors flex items-center gap-3 ${
                   activeTab === 'video'
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Video className="w-5 h-5" />
@@ -265,11 +282,14 @@ export default function MaterialDetailPage() {
               </button>
 
               <button
-                onClick={() => setActiveTab('resources')}
+                onClick={() => {
+                  setActiveTab('resources')
+                  setMobileMenuOpen(false)
+                }}
                 className={`w-full text-left p-3 rounded-lg transition-colors flex items-center gap-3 ${
                   activeTab === 'resources'
-                    ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                    : 'text-gray-700 hover:bg-gray-50'
+                    ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                    : 'text-gray-700 hover:bg-gray-100'
                 }`}
               >
                 <Download className="w-5 h-5" />
@@ -278,16 +298,19 @@ export default function MaterialDetailPage() {
 
               {quizzes.length > 0 && (
                 <button
-                  onClick={() => setActiveTab('quizzes')}
+                  onClick={() => {
+                    setActiveTab('quizzes')
+                    setMobileMenuOpen(false)
+                  }}
                   className={`w-full text-left p-3 rounded-lg transition-colors flex items-center gap-3 ${
                     activeTab === 'quizzes'
-                      ? 'bg-blue-50 text-blue-700 border border-blue-200'
-                      : 'text-gray-700 hover:bg-gray-50'
+                      ? 'bg-blue-100 text-blue-800 border border-blue-300'
+                      : 'text-gray-700 hover:bg-gray-100'
                   }`}
                 >
                   <BarChart3 className="w-5 h-5" />
                   <span>Quiz & Tes</span>
-                  <span className="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded-full ml-auto">
+                  <span className="bg-blue-200 text-blue-800 text-xs px-2 py-1 rounded-full ml-auto">
                     {quizzes.length}
                   </span>
                 </button>
@@ -317,10 +340,10 @@ export default function MaterialDetailPage() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             {/* Tab Content */}
             {activeTab === 'content' && (
-              <div className="p-6">
+              <div className="p-4 sm:p-6">
                 <div className="prose max-w-none">
-                  <h2 className="text-xl font-bold text-gray-900 mb-4">Konten Materi</h2>
-                  <div className="text-gray-700 leading-relaxed whitespace-pre-line">
+                  <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Konten Materi</h2>
+                  <div className="text-gray-700 leading-relaxed whitespace-pre-line text-sm sm:text-base">
                     {materialDetail.content}
                   </div>
                 </div>
@@ -328,8 +351,8 @@ export default function MaterialDetailPage() {
             )}
 
             {activeTab === 'video' && (
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Video Pembelajaran</h2>
+              <div className="p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Video Pembelajaran</h2>
                 {materialDetail.video_path ? (
                   <div className="aspect-video bg-black rounded-lg">
                     <video 
@@ -343,7 +366,7 @@ export default function MaterialDetailPage() {
                   </div>
                 ) : (
                   <div className="text-center py-8">
-                    <Video className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <Video className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">Video tidak tersedia untuk materi ini</p>
                   </div>
                 )}
@@ -351,9 +374,9 @@ export default function MaterialDetailPage() {
             )}
 
             {activeTab === 'resources' && (
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-4">Resources Materi</h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4">Resources Materi</h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {materialDetail.materialFilePath && (
                     <ResourceCard 
                       title="Materi Lengkap PDF"
@@ -382,7 +405,7 @@ export default function MaterialDetailPage() {
                 
                 {!materialDetail.materialFilePath && !materialDetail.ringkasanPath && !materialDetail.templatePath && (
                   <div className="text-center py-8">
-                    <FileText className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <FileText className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">Tidak ada resources tambahan untuk materi ini</p>
                   </div>
                 )}
@@ -390,16 +413,16 @@ export default function MaterialDetailPage() {
             )}
 
             {activeTab === 'quizzes' && (
-              <div className="p-6">
-                <h2 className="text-xl font-bold text-gray-900 mb-6">Quiz & Tes</h2>
+              <div className="p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-6">Quiz & Tes</h2>
                 
                 {quizzes.length === 0 ? (
                   <div className="text-center py-8">
-                    <BarChart3 className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                    <BarChart3 className="w-12 h-12 sm:w-16 sm:h-16 text-gray-400 mx-auto mb-4" />
                     <p className="text-gray-600">Tidak ada quiz yang tersedia untuk materi ini</p>
                   </div>
                 ) : (
-                  <div className="space-y-6">
+                  <div className="space-y-4 sm:space-y-6">
                     {quizzes.map((quiz) => (
                       <QuizCard 
                         key={quiz.id}
@@ -425,7 +448,7 @@ function ResourceCard({ title, description, fileUrl, icon: Icon }: any) {
   }
 
   return (
-    <div className="border border-gray-200 rounded-lg p-4 hover:border-blue-300 transition-colors">
+    <div className="border border-gray-200 rounded-lg p-4 hover:border-blue-400 transition-colors">
       <div className="flex items-start gap-3">
         <div className="bg-blue-100 p-2 rounded-lg">
           <Icon className="w-5 h-5 text-blue-600" />
@@ -466,52 +489,52 @@ function QuizCard({ quiz, onViewDetail }: QuizCardProps) {
   const canAttempt = quiz.attemptsRemaining > 0
 
   return (
-    <div className="border border-gray-200 rounded-lg p-6 hover:border-purple-300 transition-colors">
+    <div className="border border-gray-200 rounded-lg p-4 sm:p-6 hover:border-purple-400 transition-colors">
       <div className="flex items-start justify-between mb-4">
         <div className="flex-1">
-          <h3 className="text-lg font-semibold text-gray-900 mb-2">{quiz.title}</h3>
+          <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-2">{quiz.title}</h3>
           <p className="text-gray-600 text-sm mb-3">{quiz.description}</p>
           
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 text-sm">
             <div className="flex items-center gap-2">
               <Clock className="w-4 h-4 text-blue-600" />
-              <span>{formatTimeLimit(quiz.time_limit)}</span>
+              <span className="text-xs sm:text-sm">{formatTimeLimit(quiz.time_limit)}</span>
             </div>
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-green-600" />
-              <span>{quiz.totalQuestions} soal</span>
+              <span className="text-xs sm:text-sm">{quiz.totalQuestions} soal</span>
             </div>
             <div className="flex items-center gap-2">
               <Award className="w-4 h-4 text-purple-600" />
-              <span>{quiz.passing_grade}% kelulusan</span>
+              <span className="text-xs sm:text-sm">{quiz.passing_grade}% kelulusan</span>
             </div>
             <div className="flex items-center gap-2">
               <BarChart3 className="w-4 h-4 text-orange-600" />
-              <span>{quiz.attemptsUsed}/{quiz.max_attempts} percobaan</span>
+              <span className="text-xs sm:text-sm">{quiz.attemptsUsed}/{quiz.max_attempts}</span>
             </div>
           </div>
         </div>
       </div>
 
       {/* Best Score and Last Attempt */}
-      <div className="flex items-center justify-between mb-4">
-        <div className="flex items-center gap-4 text-sm text-gray-600">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between mb-4 gap-2">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-gray-600">
           {quiz.bestScore !== null && (
             <div className="flex items-center gap-1">
               <Award className="w-4 h-4 text-yellow-600" />
-              <span>Skor terbaik: {quiz.bestScore}%</span>
+              <span className="text-xs sm:text-sm">Skor terbaik: {quiz.bestScore}%</span>
             </div>
           )}
           {quiz.lastAttempt && (
             <div className="flex items-center gap-1">
               <Clock className="w-4 h-4 text-gray-500" />
-              <span>Terakhir: {new Date(quiz.lastAttempt).toLocaleDateString('id-ID')}</span>
+              <span className="text-xs sm:text-sm">Terakhir: {new Date(quiz.lastAttempt).toLocaleDateString('id-ID')}</span>
             </div>
           )}
         </div>
 
         <div className="text-sm">
-          <span className={`px-2 py-1 rounded-full ${
+          <span className={`px-2 py-1 rounded-full text-xs sm:text-sm ${
             canAttempt 
               ? 'bg-green-100 text-green-800' 
               : 'bg-red-100 text-red-800'
@@ -527,7 +550,7 @@ function QuizCard({ quiz, onViewDetail }: QuizCardProps) {
       {/* Action Button */}
       <button
         onClick={onViewDetail}
-        className="w-full py-3 px-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center gap-2"
+        className="w-full py-3 px-4 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-colors flex items-center justify-center gap-2 text-sm sm:text-base"
       >
         <BarChart3 className="w-4 h-4" />
         Lihat Detail Quiz

@@ -17,7 +17,9 @@ import {
   Star,
   Users,
   X,
-  ArrowRight
+  ArrowRight,
+  ArrowLeft,
+  Play
 } from 'lucide-react'
 
 interface Review {
@@ -69,6 +71,7 @@ export default function ClassDetailPage() {
   const [expandedSections, setExpandedSections] = useState<Set<number>>(new Set())
   const [hasSubscription, setHasSubscription] = useState(false)
   const [subscriptionLoading, setSubscriptionLoading] = useState(true)
+  const [activeTab, setActiveTab] = useState<'curriculum' | 'reviews'>('curriculum')
 
   // Review states
   const [reviews, setReviews] = useState<Review[]>([])
@@ -149,12 +152,6 @@ export default function ClassDetailPage() {
       
       if (result.success && result.data) {
         setClassDetail(result.data)
-        
-        // Expand semua section pertama kali load
-        const sectionIds: number[] = result.data.sections?.map((section: Section) => section.id) ?? []
-        const initialExpanded = new Set<number>(sectionIds)
-        setExpandedSections(initialExpanded)
-        
         setError(null)
       } else {
         throw new Error(result.message || 'Gagal memuat detail kelas')
@@ -350,6 +347,32 @@ export default function ClassDetailPage() {
     router.push(`/mycourse/${classId}/sections/${sectionId}`)
   }
 
+  // Render stars untuk rating
+  const renderStars = (rating: number, size: 'sm' | 'md' | 'lg' = 'md') => {
+    const safeRating = rating || 0
+    const sizeClass = {
+      sm: 'w-4 h-4',
+      md: 'w-5 h-5',
+      lg: 'w-6 h-6'
+    }[size]
+
+    return (
+      <div className="flex items-center gap-1">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <Star
+            key={star}
+            className={`${sizeClass} ${
+              star <= safeRating 
+                ? 'text-yellow-500 fill-current' 
+                : 'text-gray-300'
+            }`}
+          />
+        ))}
+        <span className="ml-1 text-sm font-medium text-gray-700">{safeRating.toFixed(1)}</span>
+      </div>
+    )
+  }
+
   // Auto hide messages after 5 seconds
   useEffect(() => {
     if (messageSuccess || messageFailed) {
@@ -370,80 +393,70 @@ export default function ClassDetailPage() {
     }
   }, [classId])
 
-  // Render stars untuk rating
-  const renderStars = (rating: number, size: 'sm' | 'md' | 'lg' = 'md') => {
-    const safeRating = rating || 0
-    const sizeClass = {
-      sm: 'w-4 h-4',
-      md: 'w-5 h-5',
-      lg: 'w-6 h-6'
-    }[size]
-
-    return (
-      <div className="flex items-center gap-1">
-        {[1, 2, 3, 4, 5].map((star) => (
-          <Star
-            key={star}
-            className={`${sizeClass} ${
-              star <= safeRating 
-                ? 'text-yellow-400 fill-current' 
-                : 'text-gray-300'
-            }`}
-          />
-        ))}
-        <span className="ml-1 text-sm font-medium text-gray-700">{safeRating.toFixed(1)}</span>
-      </div>
-    )
-  }
-
   if (subscriptionLoading) {
     return (
-      <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
-        <span className="ml-3 text-gray-600">Memeriksa status langganan...</span>
+      <div className="min-h-screen bg-white flex justify-center items-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Memeriksa status langganan...</p>
+        </div>
       </div>
     )
   }
 
   if (!hasSubscription && !subscriptionLoading) {
     return (
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-8 text-center">
-        <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
-          <Award className="w-8 h-8 text-yellow-600" />
+      <div className="min-h-screen bg-white flex justify-center items-center px-4">
+        <div className="bg-white border border-gray-300 rounded-xl p-6 text-center max-w-md">
+          <div className="w-16 h-16 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <Award className="w-8 h-8 text-yellow-600" />
+          </div>
+          <h1 className="text-xl font-bold text-gray-900 mb-4">Akses Premium Diperlukan</h1>
+          <p className="text-gray-600 mb-6">
+            Untuk mengakses materi ini, Anda perlu berlangganan paket premium terlebih dahulu.
+          </p>
+          <button
+            onClick={() => router.push('/profile')}
+            className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors w-full"
+          >
+            Redeem Kode Sekarang
+          </button>
         </div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-4">Akses Premium Diperlukan</h1>
-        <p className="text-gray-600 mb-6">
-          Untuk mengakses materi ini, Anda perlu berlangganan paket premium terlebih dahulu.
-        </p>
-        <button
-          onClick={() => router.push('/profile')}
-          className="bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-800 transition-colors"
-        >
-          Redeem Kode Sekarang
-        </button>
       </div>
     )
   }
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-64">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-700"></div>
-        <span className="ml-3 text-gray-600">Memuat materi...</span>
+      <div className="min-h-screen bg-white flex justify-center items-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+          <p className="mt-4 text-gray-600">Memuat materi...</p>
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 text-center">
-        <p className="text-yellow-700 font-medium">{error}</p>
-        <button 
-          onClick={fetchClassDetail}
-          className="mt-4 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
-        >
-          Coba Lagi
-        </button>
+      <div className="min-h-screen bg-white flex justify-center items-center px-4">
+        <div className="bg-yellow-100 border border-yellow-400 rounded-xl p-6 text-center max-w-md">
+          <p className="text-yellow-700 font-medium mb-4">{error}</p>
+          <div className="flex gap-3">
+            <button 
+              onClick={fetchClassDetail}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex-1"
+            >
+              Coba Lagi
+            </button>
+            <button 
+              onClick={() => router.push('/mycourse')}
+              className="border border-gray-300 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-100 transition-colors flex-1"
+            >
+              Kembali
+            </button>
+          </div>
+        </div>
       </div>
     )
   }
@@ -452,8 +465,8 @@ export default function ClassDetailPage() {
     <>
       {/* Success Message */}
       {messageSuccess && (
-        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-300">
-          <div className="bg-green-50 border border-green-200 rounded-lg p-4 shadow-lg max-w-sm">
+        <div className="fixed top-4 right-4 left-4 z-50 animate-in slide-in-from-right duration-300">
+          <div className="bg-green-100 border border-green-400 rounded-lg p-4 shadow-lg">
             <div className="flex items-center gap-3">
               <CheckCircle className="w-5 h-5 text-green-600 flex-shrink-0" />
               <div>
@@ -461,7 +474,7 @@ export default function ClassDetailPage() {
               </div>
               <button 
                 onClick={() => setMessageSuccess(null)}
-                className="text-green-600 hover:text-green-800 transition-colors"
+                className="text-green-600 hover:text-green-800 transition-colors ml-auto"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -472,8 +485,8 @@ export default function ClassDetailPage() {
 
       {/* Error Message */}
       {messageFailed && (
-        <div className="fixed top-4 right-4 z-50 animate-in slide-in-from-right duration-300">
-          <div className="bg-red-50 border border-red-200 rounded-lg p-4 shadow-lg max-w-sm">
+        <div className="fixed top-4 right-4 left-4 z-50 animate-in slide-in-from-right duration-300">
+          <div className="bg-red-100 border border-red-400 rounded-lg p-4 shadow-lg">
             <div className="flex items-center gap-3">
               <X className="w-5 h-5 text-red-600 flex-shrink-0" />
               <div>
@@ -481,7 +494,7 @@ export default function ClassDetailPage() {
               </div>
               <button 
                 onClick={() => setMessageFailed(null)}
-                className="text-red-600 hover:text-red-800 transition-colors"
+                className="text-red-600 hover:text-red-800 transition-colors ml-auto"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -490,255 +503,402 @@ export default function ClassDetailPage() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-        {/* Sidebar - Curriculum */}
-        <div className="lg:col-span-1">
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 sticky top-24">
-            <div className="p-4 border-b border-gray-200">
-              <h3 className="font-semibold text-gray-900">Kurikulum Kelas</h3>
-              <div className="text-sm text-gray-600 mt-1">
-                {classDetail?.sections?.length || 0} section
+      <div className="min-h-screen bg-white">
+        {/* Header */}
+        <div className="border-b border-gray-300">
+          <div className="max-w-6xl mx-auto px-4 py-4">
+            <button
+              onClick={() => router.push('/mycourse')}
+              className="flex items-center gap-2 text-gray-600 hover:text-gray-900 transition-colors mb-4"
+            >
+              <ArrowLeft className="w-5 h-5" />
+              <span>Kembali ke Kursus</span>
+            </button>
+
+            <h1 className="text-2xl md:text-3xl font-bold text-gray-900 mb-4">
+              {classDetail?.name}
+            </h1>
+            
+            <p className="text-gray-700 text-base leading-relaxed mb-6">
+              {classDetail?.description}
+            </p>
+
+            {/* Class Stats - Mobile */}
+            <div className="grid grid-cols-3 gap-4 mb-6">
+              <div className="text-center">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <BookOpen className="w-6 h-6 text-blue-600" />
+                </div>
+                <p className="text-sm text-gray-600">Section</p>
+                <p className="font-bold text-gray-900">{classDetail?.sections?.length || 0}</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Star className="w-6 h-6 text-green-600" />
+                </div>
+                <p className="text-sm text-gray-600">Rating</p>
+                <p className="font-bold text-gray-900">{(classDetail?.averageRating || 0).toFixed(1)}</p>
+              </div>
+              
+              <div className="text-center">
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-2">
+                  <Users className="w-6 h-6 text-purple-600" />
+                </div>
+                <p className="text-sm text-gray-600">Ulasan</p>
+                <p className="font-bold text-gray-900">{reviews.length}</p>
               </div>
             </div>
-            
-            <div className="max-h-[calc(100vh-300px)] overflow-y-auto">
-              {classDetail?.sections?.map((section, sectionIndex) => (
-                <div key={section.id} className="border-b border-gray-200 last:border-b-0">
-                  <button
-                    onClick={() => toggleSection(section.id)}
-                    className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-50 transition-colors"
-                  >
-                    <div>
-                      <h4 className="font-semibold text-gray-900 text-sm">
-                        Section {sectionIndex + 1}: {section.title}
-                      </h4>
-                      <p className="text-xs text-gray-600 mt-1">
-                        {section.materialCount || 0} materi
-                      </p>
-                    </div>
-                    {expandedSections.has(section.id) ? (
-                      <ChevronUp className="w-4 h-4 text-gray-400" />
-                    ) : (
-                      <ChevronDown className="w-4 h-4 text-gray-400" />
-                    )}
-                  </button>
-                  
-                  {expandedSections.has(section.id) && (
-                    <div className="bg-gray-50 border-t border-gray-200 p-4">
-                      <div className="space-y-3">
-                        <div>
-                          <h5 className="font-medium text-gray-900 text-sm mb-2">Deskripsi Section</h5>
-                          <p className="text-sm text-gray-600 leading-relaxed">
-                            {section.description || 'Tidak ada deskripsi untuk section ini.'}
-                          </p>
-                        </div>
-                        <button
-                          onClick={() => navigateToSection(section.id)}
-                          className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm"
-                        >
-                          <BookOpen className="w-4 h-4" />
-                          Akses Materi Section
-                          <ArrowRight className="w-4 h-4" />
-                        </button>
-                      </div>
-                    </div>
-                  )}
-                </div>
-              ))}
+
+            {/* Tab Navigation - Mobile */}
+            <div className="flex border-b border-gray-300">
+              <button
+                onClick={() => setActiveTab('curriculum')}
+                className={`flex-1 py-3 text-center font-medium border-b-2 transition-colors ${
+                  activeTab === 'curriculum'
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Kurikulum
+              </button>
+              <button
+                onClick={() => setActiveTab('reviews')}
+                className={`flex-1 py-3 text-center font-medium border-b-2 transition-colors ${
+                  activeTab === 'reviews'
+                    ? 'border-blue-600 text-blue-600'
+                    : 'border-transparent text-gray-600 hover:text-gray-900'
+                }`}
+              >
+                Ulasan ({reviews.length})
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Main Content */}
-        <div className="lg:col-span-3">
-          {/* Class Overview */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-8">
-            <div className="flex items-start justify-between mb-6">
-              <div className="flex-1">
-                <h1 className="text-3xl font-bold text-gray-900 mb-4">
-                  {classDetail?.name}
-                </h1>
-                <p className="text-gray-700 leading-relaxed mb-6">
-                  {classDetail?.description}
-                </p>
+        {/* Content */}
+        <div className="max-w-6xl mx-auto px-4 py-6">
+          {/* Mobile Content */}
+          <div className="lg:hidden">
+            {activeTab === 'curriculum' && (
+              <div className="space-y-4">
+                <h2 className="text-xl font-bold text-gray-900 mb-4">Kurikulum Kelas</h2>
                 
-                <div className="flex items-center gap-6 text-sm text-gray-600">
-                  <div className="flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-blue-600" />
-                    <span>{classDetail?.sections?.length || 0} Section</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Users className="w-5 h-5 text-green-600" />
-                    <span>{reviews.length} Ulasan</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Award className="w-5 h-5 text-yellow-600" />
-                    <span>Kelas Premium</span>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Class Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-6">
-              <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-blue-100 rounded-full flex items-center justify-center">
-                    <BookOpen className="w-5 h-5 text-blue-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-blue-600 font-medium">Total Section</p>
-                    <p className="text-2xl font-bold text-blue-700">{classDetail?.sections?.length || 0}</p>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-green-50 border border-green-200 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-green-100 rounded-full flex items-center justify-center">
-                    <Star className="w-5 h-5 text-green-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-green-600 font-medium">Rating Kelas</p>
-                    <div className="flex items-center gap-2">
-                      <p className="text-2xl font-bold text-green-700">{(classDetail?.averageRating || 0).toFixed(1)}</p>
-                      {renderStars(classDetail?.averageRating || 0, 'sm')}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              <div className="bg-purple-50 border border-purple-200 rounded-lg p-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-10 h-10 bg-purple-100 rounded-full flex items-center justify-center">
-                    <Users className="w-5 h-5 text-purple-600" />
-                  </div>
-                  <div>
-                    <p className="text-sm text-purple-600 font-medium">Total Ulasan</p>
-                    <p className="text-2xl font-bold text-purple-700">{reviews.length}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* How to Start Card */}
-          <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 mb-8">
-            <div className="flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center">
-                <BookOpen className="w-6 h-6 text-blue-600" />
-              </div>
-              <div className="flex-1">
-                <h3 className="text-lg font-semibold text-blue-900 mb-2">
-                  Cara Memulai Belajar
-                </h3>
-                <p className="text-blue-700 text-sm">
-                  Pilih section dari sidebar kiri untuk melihat deskripsi section, kemudian klik "Akses Materi Section" untuk memulai belajar materi dalam section tersebut.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Reviews Section */}
-          <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-            <div className="flex justify-between items-center mb-6">
-              <div>
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Ulasan & Rating</h2>
-                <div className="flex items-center gap-4">
-                  {renderStars(classDetail?.averageRating || 0, 'lg')}
-                  <span className="text-gray-600">({reviews.length} ulasan)</span>
-                </div>
-              </div>
-              <button
-                onClick={() => setShowReviewModal(true)}
-                className="bg-blue-600 text-white px-6 py-3 rounded-xl font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2 shadow-sm"
-              >
-                <Plus className="w-5 h-5" />
-                {userReview ? 'Edit Review' : 'Tulis Review'}
-              </button>
-            </div>
-
-            {/* User's Review */}
-            {userReview && (
-              <div className="bg-blue-50 border border-blue-200 rounded-xl p-6 mb-6">
-                <div className="flex justify-between items-start mb-4">
-                  <h3 className="font-semibold text-blue-900 text-lg">Review Anda</h3>
-                  <div className="flex gap-2">
+                {classDetail?.sections?.map((section, sectionIndex) => (
+                  <div key={section.id} className="border border-gray-300 rounded-lg overflow-hidden">
                     <button
-                      onClick={() => setShowReviewModal(true)}
-                      className="text-blue-600 hover:text-blue-800 transition-colors p-2"
-                      title="Edit Review"
+                      onClick={() => toggleSection(section.id)}
+                      className="w-full p-4 bg-gray-100 flex items-center justify-between hover:bg-gray-200 transition-colors"
                     >
-                      <Edit className="w-4 h-4" />
+                      <div className="text-left">
+                        <h3 className="font-semibold text-gray-900">
+                          Section {sectionIndex + 1}: {section.title}
+                        </h3>
+                        <p className="text-gray-600 text-sm mt-1">
+                          {section.materialCount || 0} materi
+                        </p>
+                      </div>
+                      {expandedSections.has(section.id) ? (
+                        <ChevronUp className="w-5 h-5 text-gray-600" />
+                      ) : (
+                        <ChevronDown className="w-5 h-5 text-gray-600" />
+                      )}
                     </button>
-                    <button
-                      onClick={() => setShowDeleteConfirm(true)}
-                      className="text-red-600 hover:text-red-800 transition-colors p-2"
-                      title="Hapus Review"
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                </div>
-                <div className="flex items-start gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                    {userReview.User?.name?.charAt(0) || 'U'}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-center gap-3 mb-2">
-                      <h4 className="font-semibold text-gray-900">{userReview.User?.name || 'User'}</h4>
-                      {renderStars(userReview.rating, 'sm')}
-                      <span className="text-sm text-gray-500">
-                        {new Date(userReview.createdAt).toLocaleDateString('id-ID')}
-                      </span>
-                    </div>
-                    <p className="text-gray-700">{userReview.comment}</p>
-                    {!userReview.isApproved && (
-                      <div className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 px-3 py-1 rounded-full text-xs font-medium mt-2">
-                        <Clock className="w-3 h-3" />
-                        Menunggu persetujuan admin
+                    
+                    {expandedSections.has(section.id) && (
+                      <div className="bg-white p-4 border-t border-gray-300">
+                        <div className="space-y-3">
+                          <div>
+                            <h5 className="font-medium text-gray-900 text-sm mb-2">Deskripsi Section</h5>
+                            <p className="text-gray-700 text-sm leading-relaxed">
+                              {section.description || 'Tidak ada deskripsi untuk section ini.'}
+                            </p>
+                          </div>
+                          <button
+                            onClick={() => navigateToSection(section.id)}
+                            className="w-full bg-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm"
+                          >
+                            <Play className="w-4 h-4" />
+                            Mulai Belajar
+                          </button>
+                        </div>
                       </div>
                     )}
                   </div>
-                </div>
+                ))}
+
+                {(!classDetail?.sections || classDetail.sections.length === 0) && (
+                  <div className="text-center py-8 border border-gray-300 rounded-lg">
+                    <BookOpen className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                    <h3 className="text-lg font-semibold text-gray-700 mb-2">Belum ada section</h3>
+                    <p className="text-gray-600">Materi untuk kelas ini sedang dalam persiapan</p>
+                  </div>
+                )}
               </div>
             )}
 
-            {/* Other Reviews */}
-            <div className="space-y-6">
-              {reviews.filter(review => review.id !== userReview?.id).map((review) => (
-                <div key={review.id} className="border-b border-gray-200 pb-6 last:border-0">
-                  <div className="flex items-start gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-gray-500 to-gray-700 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                      {review.User?.name?.charAt(0) || 'U'}
-                    </div>
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h4 className="font-semibold text-gray-900">{review.User?.name || 'User'}</h4>
-                        {renderStars(review.rating, 'sm')}
-                        <span className="text-sm text-gray-500">
-                          {new Date(review.createdAt).toLocaleDateString('id-ID')}
-                        </span>
-                      </div>
-                      <p className="text-gray-700">{review.comment}</p>
+            {activeTab === 'reviews' && (
+              <div className="space-y-6">
+                <div className="flex justify-between items-center">
+                  <div>
+                    <h2 className="text-xl font-bold text-gray-900 mb-2">Ulasan & Rating</h2>
+                    <div className="flex items-center gap-4">
+                      {renderStars(classDetail?.averageRating || 0, 'lg')}
+                      <span className="text-gray-600">({reviews.length} ulasan)</span>
                     </div>
                   </div>
-                </div>
-              ))}
-
-              {reviews.length === 0 && (
-                <div className="text-center py-8">
-                  <MessageCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-                  <h3 className="text-lg font-semibold text-gray-700 mb-2">Belum ada ulasan</h3>
-                  <p className="text-gray-500 mb-4">Jadilah yang pertama memberikan ulasan untuk kelas ini</p>
                   <button
                     onClick={() => setShowReviewModal(true)}
-                    className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2 text-sm"
                   >
-                    Tulis Review Pertama
+                    <Plus className="w-4 h-4" />
+                    {userReview ? 'Edit' : 'Tulis'}
                   </button>
                 </div>
-              )}
+
+                {/* User's Review */}
+                {userReview && (
+                  <div className="bg-blue-100 border border-blue-300 rounded-lg p-4">
+                    <div className="flex justify-between items-start mb-3">
+                      <h3 className="font-semibold text-blue-900">Review Anda</h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setShowReviewModal(true)}
+                          className="text-blue-600 hover:text-blue-800 transition-colors p-1"
+                          title="Edit Review"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setShowDeleteConfirm(true)}
+                          className="text-red-600 hover:text-red-800 transition-colors p-1"
+                          title="Hapus Review"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold">
+                        {userReview.User?.name?.charAt(0) || 'U'}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-semibold text-gray-900 text-sm">{userReview.User?.name || 'User'}</h4>
+                          {renderStars(userReview.rating, 'sm')}
+                        </div>
+                        <p className="text-gray-700 text-sm">{userReview.comment}</p>
+                        {!userReview.isApproved && (
+                          <div className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 px-2 py-1 rounded text-xs font-medium mt-2">
+                            <Clock className="w-3 h-3" />
+                            Menunggu persetujuan
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Other Reviews */}
+                <div className="space-y-4">
+                  {reviews.filter(review => review.id !== userReview?.id).map((review) => (
+                    <div key={review.id} className="border-b border-gray-300 pb-4 last:border-0">
+                      <div className="flex items-start gap-3">
+                        <div className="w-10 h-10 bg-gray-600 rounded-full flex items-center justify-center text-white font-bold">
+                          {review.User?.name?.charAt(0) || 'U'}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-semibold text-gray-900 text-sm">{review.User?.name || 'User'}</h4>
+                            {renderStars(review.rating, 'sm')}
+                          </div>
+                          <p className="text-gray-700 text-sm">{review.comment}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {reviews.length === 0 && (
+                    <div className="text-center py-8">
+                      <MessageCircle className="w-12 h-12 text-gray-400 mx-auto mb-3" />
+                      <h3 className="text-lg font-semibold text-gray-700 mb-2">Belum ada ulasan</h3>
+                      <p className="text-gray-600 mb-4">Jadilah yang pertama memberikan ulasan</p>
+                      <button
+                        onClick={() => setShowReviewModal(true)}
+                        className="bg-blue-600 text-white px-4 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                      >
+                        Tulis Review Pertama
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Desktop Content */}
+          <div className="hidden lg:grid grid-cols-1 lg:grid-cols-4 gap-8">
+            {/* Sidebar - Curriculum */}
+            <div className="lg:col-span-1">
+              <div className="bg-white border border-gray-300 rounded-lg sticky top-24">
+                <div className="p-4 border-b border-gray-300">
+                  <h3 className="font-semibold text-gray-900">Kurikulum Kelas</h3>
+                  <div className="text-sm text-gray-600 mt-1">
+                    {classDetail?.sections?.length || 0} section
+                  </div>
+                </div>
+                
+                <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+                  {classDetail?.sections?.map((section, sectionIndex) => (
+                    <div key={section.id} className="border-b border-gray-300 last:border-b-0">
+                      <button
+                        onClick={() => toggleSection(section.id)}
+                        className="w-full p-4 text-left flex items-center justify-between hover:bg-gray-100 transition-colors"
+                      >
+                        <div>
+                          <h4 className="font-semibold text-gray-900 text-sm">
+                            Section {sectionIndex + 1}: {section.title}
+                          </h4>
+                          <p className="text-xs text-gray-600 mt-1">
+                            {section.materialCount || 0} materi
+                          </p>
+                        </div>
+                        {expandedSections.has(section.id) ? (
+                          <ChevronUp className="w-4 h-4 text-gray-600" />
+                        ) : (
+                          <ChevronDown className="w-4 h-4 text-gray-600" />
+                        )}
+                      </button>
+                      
+                      {expandedSections.has(section.id) && (
+                        <div className="bg-gray-100 border-t border-gray-300 p-4">
+                          <div className="space-y-3">
+                            <div>
+                              <h5 className="font-medium text-gray-900 text-sm mb-2">Deskripsi Section</h5>
+                              <p className="text-sm text-gray-700 leading-relaxed">
+                                {section.description || 'Tidak ada deskripsi untuk section ini.'}
+                              </p>
+                            </div>
+                            <button
+                              onClick={() => navigateToSection(section.id)}
+                              className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center justify-center gap-2 text-sm"
+                            >
+                              <Play className="w-4 h-4" />
+                              Mulai Belajar
+                            </button>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="lg:col-span-3">
+              {/* Reviews Section */}
+              <div className="bg-white border border-gray-300 rounded-lg p-6">
+                <div className="flex justify-between items-center mb-6">
+                  <div>
+                    <h2 className="text-2xl font-bold text-gray-900 mb-2">Ulasan & Rating</h2>
+                    <div className="flex items-center gap-4">
+                      {renderStars(classDetail?.averageRating || 0, 'lg')}
+                      <span className="text-gray-600">({reviews.length} ulasan)</span>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => setShowReviewModal(true)}
+                    className="bg-blue-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-700 transition-colors flex items-center gap-2"
+                  >
+                    <Plus className="w-5 h-5" />
+                    {userReview ? 'Edit Review' : 'Tulis Review'}
+                  </button>
+                </div>
+
+                {/* User's Review */}
+                {userReview && (
+                  <div className="bg-blue-100 border border-blue-300 rounded-lg p-6 mb-6">
+                    <div className="flex justify-between items-start mb-4">
+                      <h3 className="font-semibold text-blue-900 text-lg">Review Anda</h3>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => setShowReviewModal(true)}
+                          className="text-blue-600 hover:text-blue-800 transition-colors p-2"
+                          title="Edit Review"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setShowDeleteConfirm(true)}
+                          className="text-red-600 hover:text-red-800 transition-colors p-2"
+                          title="Hapus Review"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <div className="w-12 h-12 bg-blue-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                        {userReview.User?.name?.charAt(0) || 'U'}
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-semibold text-gray-900">{userReview.User?.name || 'User'}</h4>
+                          {renderStars(userReview.rating, 'sm')}
+                          <span className="text-sm text-gray-600">
+                            {new Date(userReview.createdAt).toLocaleDateString('id-ID')}
+                          </span>
+                        </div>
+                        <p className="text-gray-700">{userReview.comment}</p>
+                        {!userReview.isApproved && (
+                          <div className="inline-flex items-center gap-1 bg-yellow-100 text-yellow-700 px-3 py-1 rounded text-xs font-medium mt-2">
+                            <Clock className="w-3 h-3" />
+                            Menunggu persetujuan admin
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                {/* Other Reviews */}
+                <div className="space-y-6">
+                  {reviews.filter(review => review.id !== userReview?.id).map((review) => (
+                    <div key={review.id} className="border-b border-gray-300 pb-6 last:border-0">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-gray-600 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                          {review.User?.name?.charAt(0) || 'U'}
+                        </div>
+                        <div className="flex-1">
+                          <div className="flex items-center gap-3 mb-2">
+                            <h4 className="font-semibold text-gray-900">{review.User?.name || 'User'}</h4>
+                            {renderStars(review.rating, 'sm')}
+                            <span className="text-sm text-gray-600">
+                              {new Date(review.createdAt).toLocaleDateString('id-ID')}
+                            </span>
+                          </div>
+                          <p className="text-gray-700">{review.comment}</p>
+                        </div>
+                      </div>
+                    </div>
+                  ))}
+
+                  {reviews.length === 0 && (
+                    <div className="text-center py-8">
+                      <MessageCircle className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+                      <h3 className="text-lg font-semibold text-gray-700 mb-2">Belum ada ulasan</h3>
+                      <p className="text-gray-600 mb-4">Jadilah yang pertama memberikan ulasan untuk kelas ini</p>
+                      <button
+                        onClick={() => setShowReviewModal(true)}
+                        className="bg-blue-600 text-white px-6 py-2 rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                      >
+                        Tulis Review Pertama
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -746,15 +906,15 @@ export default function ClassDetailPage() {
 
       {/* Review Modal */}
       {showReviewModal && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-lg">
             <div className="flex justify-between items-center mb-4">
               <h3 className="text-xl font-bold text-gray-900">
                 {userReview ? 'Edit Review' : 'Tulis Review'}
               </h3>
               <button
                 onClick={handleCloseReviewModal}
-                className="text-gray-400 hover:text-gray-600 transition-colors"
+                className="text-gray-600 hover:text-gray-800 transition-colors"
               >
                 <X className="w-6 h-6" />
               </button>
@@ -777,7 +937,7 @@ export default function ClassDetailPage() {
                       <Star
                         className={`w-8 h-8 ${
                           star <= reviewForm.rating
-                            ? 'text-yellow-400 fill-current'
+                            ? 'text-yellow-500 fill-current'
                             : 'text-gray-300'
                         }`}
                       />
@@ -796,7 +956,7 @@ export default function ClassDetailPage() {
                   value={reviewForm.comment}
                   onChange={(e) => setReviewForm(prev => ({ ...prev, comment: e.target.value }))}
                   rows={4}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
                   placeholder="Bagikan pengalaman belajar Anda..."
                 />
               </div>
@@ -805,7 +965,7 @@ export default function ClassDetailPage() {
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={handleCloseReviewModal}
-                  className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors"
+                  className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-colors"
                 >
                   Batal
                 </button>
@@ -834,8 +994,8 @@ export default function ClassDetailPage() {
 
       {/* Delete Confirmation Dialog */}
       {showDeleteConfirm && (
-        <div className="fixed inset-0 bg-black/20 backdrop-blur-sm flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl max-w-md w-full p-6 shadow-lg">
             <div className="flex items-center gap-4 mb-4">
               <div className="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center">
                 <Trash2 className="w-6 h-6 text-red-600" />
@@ -846,7 +1006,7 @@ export default function ClassDetailPage() {
               </div>
             </div>
             
-            <div className="bg-gray-50 rounded-lg p-4 mb-6">
+            <div className="bg-gray-100 rounded-lg p-4 mb-6">
               <p className="text-gray-700">
                 Apakah Anda yakin ingin menghapus review ini? Review yang telah dihapus tidak dapat dikembalikan.
               </p>
@@ -856,7 +1016,7 @@ export default function ClassDetailPage() {
               <button
                 onClick={() => setShowDeleteConfirm(false)}
                 disabled={deleteLoading}
-                className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-50 transition-colors disabled:opacity-50"
+                className="flex-1 px-4 py-2 text-gray-700 border border-gray-300 rounded-lg font-medium hover:bg-gray-100 transition-colors disabled:opacity-50"
               >
                 Batal
               </button>
