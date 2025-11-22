@@ -432,18 +432,21 @@ export default function ClassDetailPage() {
     })
   }
 
-  // Auto-calculate stats from actual data
-  const totalMaterials = sections.reduce((acc, section) => acc + (section.Material?.length || 0), 0)
-  const totalQuizzes = sections.reduce((acc, section) => acc + (section.Quiz?.length || 0), 0)
+// Auto-calculate stats from actual data
+const totalMaterials = sections.reduce((acc, section) => acc + (section.Material?.length || 0), 0)
+const totalQuizzes = sections.reduce((acc, section) => acc + (section.Quiz?.length || 0), 0)
 
-  const stats = [
--    { value: classData?.studentCount?.toString() || '0', label: 'Siswa', icon: <Users className="w-5 h-5" /> },
-    { value: sections.length.toString(), label: 'Section', icon: <List className="w-5 h-5" /> },
--    { value: classData?.materialCount?.toString() || '0', label: 'Total Materi', icon: <FileText className="w-5 h-5" /> },
--    { value: '4.8', label: 'Rating', icon: <Award className="w-5 h-5" /> },
-+    { value: totalMaterials.toString(), label: 'Total Materi', icon: <FileText className="w-5 h-5" /> },
-+    { value: totalQuizzes.toString(), label: 'Total Quiz', icon: <Award className="w-5 h-5" /> },
-  ]
+interface Stat {
+  value: string
+  label: string
+  icon: React.ReactNode
+}
+
+const stats: Stat[] = [
+  { value: sections.length.toString(), label: 'Section', icon: <List className="w-5 h-5" /> },
+  { value: totalMaterials.toString(), label: 'Total Materi', icon: <FileText className="w-5 h-5" /> },
+  { value: totalQuizzes.toString(), label: 'Total Quiz', icon: <Award className="w-5 h-5" /> },
+]
 
   if (loading && !classData) {
     return (

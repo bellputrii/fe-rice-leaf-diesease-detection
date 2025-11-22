@@ -18,9 +18,6 @@ interface Course {
   rating: number
   instructor: string
   featured?: boolean
-  description: string
-  averageRating: number
-  totalReviews: number
 }
 
 interface ApiResponse {
@@ -33,8 +30,6 @@ interface ApiResponse {
       image_path: string
       categoryId: number
       image_path_relative: string
-      averageRating: number
-      totalReviews: number
     }>
     meta: {
       totalItems: number
@@ -53,6 +48,7 @@ export default function ELearningPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [showAllCourses, setShowAllCourses] = useState(false)
+  const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const categories = [
     { id: 'all', name: 'Semua Kursus' },
@@ -63,66 +59,66 @@ export default function ELearningPage() {
   ]
 
   // Data untuk paket berlangganan
-    const plans = [
+  const plans = [
     {
       name: "Paket 1 Bulan",
-      originalPrice: "Rp 50.000",
-      price: "Rp 15.000",
+      originalPrice: "Rp 100.000",
+      price: "Rp 30.000",
       discount: "70%",
       duration: "1 Bulan",
       features: [
-        "Akses ke SEMUA materi pembelajaran",
-        "Konsultasi dengan mentor 2x per minggu",
-        "Download materi PDF eksklusif",
+        "Akses ke SEMUA kursus dan materi",
+        "Download modul PDF eksklusif",
         "Grup diskusi komunitas",
-        "Update materi berkala",
-        "Berkesempatan menjadi Brand Ambassador"
+        "Sertifikat penyelesaian kursus",
+        "Update kursus berkala",
+        "Forum tanya jawab"
       ],
       buttonText: "Pilih Paket 1 Bulan",
       popular: false,
-      link: "https://lynk.id/ambilprestasi"
+      link: "https://link.id/ambilprestasi-elearning-1bulan"
     },
     {
-      name: "Paket 4 Bulan",
-      originalPrice: "Rp 166.000",
-      price: "Rp 50.000",
+      name: "Paket 2 Bulan",
+      originalPrice: "Rp 200.000",
+      price: "Rp 60.000",
       discount: "70%",
-      duration: "4 Bulan",
+      duration: "2 Bulan",
       features: [
-        "Akses ke SEMUA materi pembelajaran",
-        "Konsultasi dengan mentor 3x per minggu",
-        "Download materi PDF eksklusif",
+        "Akses ke SEMUA kursus dan materi",
+        "Download modul PDF eksklusif",
         "Grup diskusi komunitas",
-        "Update materi berkala",
+        "Sertifikat penyelesaian kursus",
+        "Update kursus berkala",
+        "Forum tanya jawab",
         "Priority support",
-        "Video rekaman sesi",
-        "Berkesempatan menjadi Brand Ambassador"
+        "Video rekaman materi"
       ],
-      buttonText: "Pilih Paket 4 Bulan",
+      buttonText: "Pilih Paket 2 Bulan",
       popular: true,
-      link: "https://lynk.id/ambilprestasi"
+      link: "https://link.id/ambilprestasi-elearning-2bulan"
     },
     {
-      name: "Paket 1 Tahun",
-      originalPrice: "Rp 333.000",
-      price: "Rp 100.000",
+      name: "Paket 3 Bulan",
+      originalPrice: "Rp 300.000",
+      price: "Rp 90.000",
       discount: "70%",
-      duration: "1 Tahun",
+      duration: "3 Bulan",
       features: [
-        "Akses ke SEMUA materi pembelajaran",
-        "Konsultasi dengan mentor 5x per minggu",
-        "Download materi PDF eksklusif",
+        "Akses ke SEMUA kursus dan materi",
+        "Download modul PDF eksklusif",
         "Grup diskusi komunitas",
-        "Update materi berkala",
+        "Sertifikat penyelesaian kursus",
+        "Update kursus berkala",
+        "Forum tanya jawab",
         "Priority support",
-        "Video rekaman sesi",
-        "Personal learning plan",
-        "Assessment perkembangan",
-        "Berkesempatan menjadi Brand Ambassador"
+        "Video rekaman materi",
+        "Personal learning path",
+        "Assessment perkembangan belajar"
       ],
-      buttonText: "Pilih Paket 1 Tahun",
+      buttonText: "Pilih Paket 3 Bulan",
       popular: false,
-      link: "https://lynk.id/ambilprestasi"
+      link: "https://link.id/ambilprestasi-elearning-3bulan"
     }
   ]
 
@@ -160,23 +156,45 @@ export default function ELearningPage() {
 
   // Fungsi untuk handle show more courses
   const handleShowMoreCourses = () => {
+    if (!isAuthenticated) {
+      router.push('/auth/login')
+      return
+    }
     setShowAllCourses(true)
   }
 
-  // Fetch data courses dari API publik
+  // Fetch data courses dari API
   useEffect(() => {
     const fetchCourses = async () => {
       try {
         setLoading(true)
         
-        const response = await fetch(`https://api.damarjatiam.my.id/api/v1/public/classes`, {
+        const token = localStorage.getItem("token")
+        
+        if (!token) {
+          setError('Token tidak ditemukan. Silakan login kembali.')
+          setLoading(false)
+          setIsAuthenticated(false)
+          return
+        }
+
+        setIsAuthenticated(true)
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/classes`, {
           method: "GET",
           headers: {
-            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`,
           }
         })
 
         if (!response.ok) {
+          if (response.status === 401) {
+            localStorage.removeItem("token")
+            setError('Sesi telah berakhir. Silakan login kembali.')
+            setIsAuthenticated(false)
+            setTimeout(() => router.push('/auth/login'), 2000)
+            return
+          }
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         
@@ -191,11 +209,8 @@ export default function ELearningPage() {
             duration: `${Math.floor(Math.random() * 6) + 3} Jam`,
             participants: (Math.floor(Math.random() * 400) + 100).toString(),
             level: ['Pemula', 'Menengah', 'Lanjutan'][index % 3],
-            rating: classItem.averageRating > 0 ? classItem.averageRating : parseFloat((4.5 + Math.random() * 0.5).toFixed(1)),
+            rating: parseFloat((4.5 + Math.random() * 0.5).toFixed(1)),
             instructor: getDefaultInstructor(index),
-            description: classItem.description,
-            averageRating: classItem.averageRating,
-            totalReviews: classItem.totalReviews,
             featured: index < 2
           }))
 
@@ -214,7 +229,7 @@ export default function ELearningPage() {
     }
 
     fetchCourses()
-  }, [])
+  }, [router])
 
   // Helper functions untuk transform data
   const mapCategory = (categoryId: number): string => {
@@ -251,9 +266,6 @@ export default function ELearningPage() {
       level: 'Pemula',
       rating: 4.8,
       instructor: 'Dr. Sarah Wijaya',
-      description: 'Pelajari teknik menulis esai akademik yang memenangkan kompetisi',
-      averageRating: 4.8,
-      totalReviews: 25,
       featured: true
     },
     {
@@ -266,9 +278,6 @@ export default function ELearningPage() {
       level: 'Menengah',
       rating: 4.9,
       instructor: 'Prof. Ahmad Rahman',
-      description: 'Buat business plan yang menarik investor dan memenangkan kompetisi startup',
-      averageRating: 4.9,
-      totalReviews: 18,
       featured: true
     },
     {
@@ -280,10 +289,7 @@ export default function ELearningPage() {
       participants: '280',
       level: 'Pemula',
       rating: 4.7,
-      instructor: 'Dr. Lisa Santoso',
-      description: 'Teknik menulis karya ilmiah dan strategi publikasi yang efektif',
-      averageRating: 4.7,
-      totalReviews: 15
+      instructor: 'Dr. Lisa Santoso'
     },
     {
       id: 4,
@@ -294,10 +300,7 @@ export default function ELearningPage() {
       participants: '355',
       level: 'Pemula',
       rating: 4.6,
-      instructor: 'Maya Desain',
-      description: 'Belajar desain poster akademik yang menarik dan informatif',
-      averageRating: 4.6,
-      totalReviews: 22
+      instructor: 'Maya Desain'
     },
     {
       id: 5,
@@ -308,10 +311,7 @@ export default function ELearningPage() {
       participants: '290',
       level: 'Menengah',
       rating: 4.8,
-      instructor: 'Dr. Sarah Wijaya',
-      description: 'Rahasia menulis essay beasiswa yang memikat panitia seleksi',
-      averageRating: 4.8,
-      totalReviews: 30
+      instructor: 'Dr. Sarah Wijaya'
     },
     {
       id: 6,
@@ -322,10 +322,7 @@ export default function ELearningPage() {
       participants: '320',
       level: 'Lanjutan',
       rating: 4.7,
-      instructor: 'Prof. Ahmad Rahman',
-      description: 'Teknik analisis pasar yang komprehensif untuk business plan',
-      averageRating: 4.7,
-      totalReviews: 12
+      instructor: 'Prof. Ahmad Rahman'
     }
   ]
 
@@ -505,6 +502,14 @@ export default function ELearningPage() {
               <div className="text-center py-8">
                 <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6 max-w-md mx-auto">
                   <p className="text-yellow-700 font-medium">{error}</p>
+                  {error.includes('login kembali') && (
+                    <button 
+                      onClick={() => router.push('/auth/login')}
+                      className="mt-3 bg-blue-700 text-white px-4 py-2 rounded-lg hover:bg-blue-800 transition-colors"
+                    >
+                      Login Kembali
+                    </button>
+                  )}
                 </div>
               </div>
             )}
@@ -559,10 +564,6 @@ export default function ELearningPage() {
                           {course.title}
                         </h3>
 
-                        <p className="text-gray-600 text-sm line-clamp-2">
-                          {course.description}
-                        </p>
-
                         <div className="flex items-center gap-2 text-sm text-gray-600">
                           <span className="font-medium text-xs">{course.instructor}</span>
                         </div>
@@ -581,7 +582,6 @@ export default function ELearningPage() {
                           <div className="flex items-center gap-1">
                             <Star className="w-3 h-3 text-yellow-400 fill-current" />
                             <span className="font-semibold">{course.rating}</span>
-                            <span className="text-gray-400">({course.totalReviews})</span>
                           </div>
                         </div>
 
@@ -602,17 +602,20 @@ export default function ELearningPage() {
                   <div className="text-center mt-8">
                     <div className="bg-blue-700 rounded-xl p-6 max-w-2xl mx-auto">
                       <h3 className="text-white text-lg font-bold mb-3">
-                        Temukan Lebih Banyak Kursus
+                        {isAuthenticated ? 'Temukan Lebih Banyak Kursus' : 'Login untuk Mengakses Semua Kursus'}
                       </h3>
                       <p className="text-blue-100 mb-6 text-sm">
-                        Masih ada {filteredCourses.length - 6} kursus lainnya yang menunggu untuk dipelajari!
+                        {isAuthenticated 
+                          ? `Masih ada ${filteredCourses.length - 6} kursus lainnya yang menunggu untuk dipelajari!`
+                          : 'Login untuk mengakses semua kursus premium dan fitur lengkap lainnya.'
+                        }
                       </p>
                       <button 
                         onClick={handleShowMoreCourses}
                         className="bg-white text-blue-700 px-6 py-3 rounded-lg font-semibold transition-colors hover:bg-blue-50 shadow-md flex items-center gap-2 justify-center mx-auto"
                       >
                         <ChevronDown className="w-4 h-4" />
-                        Tampilkan Semua Kursus
+                        {isAuthenticated ? 'Tampilkan Semua Kursus' : 'Login Sekarang'}
                       </button>
                     </div>
                   </div>

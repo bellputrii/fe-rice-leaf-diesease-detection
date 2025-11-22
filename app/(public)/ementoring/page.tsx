@@ -5,7 +5,6 @@ import Image from 'next/image'
 import LayoutNavbar from '@/components/public/LayoutNavbar'
 import { Star, Video, Calendar, BookOpen, Users, Award, Clock, CheckCircle, Mail, Zap } from 'lucide-react'
 import Footer from '@/components/public/Footer'
-import { useRouter } from 'next/navigation'
 
 interface Mentor {
   id: string
@@ -47,7 +46,6 @@ interface ApiResponse {
 }
 
 export default function EMentoringPage() {
-  const router = useRouter()
   const [activeCategory, setActiveCategory] = useState('all')
   const [mentors, setMentors] = useState<Mentor[]>([])
   const [loading, setLoading] = useState(true)
@@ -62,35 +60,23 @@ export default function EMentoringPage() {
     { id: 'design', name: 'Desain' }
   ]
 
-  // Fetch data mentors dari API
+  // Token statis yang diberikan
+  const STATIC_TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiODU4NzdhZWItNzBiZS00Y2UyLTg1OTQtNmUzMTVhMjI4NWRkIiwiaWF0IjoxNzYzNzc0Mjk3LCJleHAiOjE3NjM4NjA2OTd9.tR_quLOZj-NH9LvsQHm_KgqoN13JnSTsLHPgc9bsqnk"
+
+  // Fetch data mentors dari API tanpa perlu login
   useEffect(() => {
     const fetchMentors = async () => {
       try {
         setLoading(true)
-        
-        const token = localStorage.getItem("token")
-        
-        if (!token) {
-          setError('Token tidak ditemukan. Silakan login kembali.')
-          setLoading(false)
-          return
-        }
 
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/public/teachers`, {
+        const response = await fetch("https://api.damarjatiam.my.id/api/v1/public/teachers", {
           method: "GET",
           headers: {
-            "Authorization": `Bearer ${token}`,
+            "Authorization": `Bearer ${STATIC_TOKEN}`,
           },
-          redirect: "follow" as RequestRedirect
         })
 
         if (!response.ok) {
-          if (response.status === 401) {
-            localStorage.removeItem("token")
-            setError('Sesi telah berakhir. Silakan login kembali.')
-            setTimeout(() => router.push('/auth/login'), 2000)
-            return
-          }
           throw new Error(`HTTP error! status: ${response.status}`)
         }
         
@@ -128,12 +114,15 @@ export default function EMentoringPage() {
     }
 
     fetchMentors()
-  }, [router])
+  }, [])
 
   const mapField = (specialization: string | null): string => {
     if (!specialization) return 'Pendidikan Umum'
     
     const fieldMap: { [key: string]: string } = {
+      'esai': 'Essay & Penulisan',
+      'bplan': 'Bisnis & Business Plan',
+      'poster': 'Desain & Kreatif',
       'mathematics': 'Matematika & Essay',
       'science': 'Sains & Penelitian',
       'language': 'Bahasa & Essay',
@@ -149,6 +138,9 @@ export default function EMentoringPage() {
     if (!specialization) return 'essay'
     
     const categoryMap: { [key: string]: string } = {
+      'esai': 'essay',
+      'bplan': 'business',
+      'poster': 'design',
       'mathematics': 'essay',
       'science': 'research',
       'language': 'essay',
@@ -222,11 +214,13 @@ export default function EMentoringPage() {
     }
   ]
 
+  // GANTI VARIABLE PLANS PADA KEDUA HALAMAN DENGAN INI:
+
   const plans = [
     {
       name: "Paket 1 Bulan",
-      originalPrice: "Rp 100.000",
-      price: "Rp 30.000",
+      originalPrice: "Rp 50.000",
+      price: "Rp 15.000",
       discount: "70%",
       duration: "1 Bulan",
       features: [
@@ -234,54 +228,54 @@ export default function EMentoringPage() {
         "Konsultasi dengan mentor 2x per minggu",
         "Download materi PDF eksklusif",
         "Grup diskusi komunitas",
-        "Sertifikat partisipasi",
-        "Update materi berkala"
+        "Update materi berkala",
+        "Berkesempatan menjadi Brand Ambassador"
       ],
       buttonText: "Pilih Paket 1 Bulan",
       popular: false,
-      link: "https://link.id/ambilprestasi-1bulan"
+      link: "https://lynk.id/ambilprestasi"
     },
     {
-      name: "Paket 2 Bulan",
-      originalPrice: "Rp 200.000",
-      price: "Rp 60.000",
+      name: "Paket 4 Bulan",
+      originalPrice: "Rp 166.000",
+      price: "Rp 50.000",
       discount: "70%",
-      duration: "2 Bulan",
+      duration: "4 Bulan",
       features: [
         "Akses ke SEMUA materi pembelajaran",
         "Konsultasi dengan mentor 3x per minggu",
         "Download materi PDF eksklusif",
         "Grup diskusi komunitas",
-        "Sertifikat partisipasi",
         "Update materi berkala",
         "Priority support",
-        "Video rekaman sesi"
+        "Video rekaman sesi",
+        "Berkesempatan menjadi Brand Ambassador"
       ],
-      buttonText: "Pilih Paket 2 Bulan",
+      buttonText: "Pilih Paket 4 Bulan",
       popular: true,
-      link: "https://link.id/ambilprestasi-2bulan"
+      link: "https://lynk.id/ambilprestasi"
     },
     {
-      name: "Paket 3 Bulan",
-      originalPrice: "Rp 300.000",
-      price: "Rp 90.000",
+      name: "Paket 1 Tahun",
+      originalPrice: "Rp 333.000",
+      price: "Rp 100.000",
       discount: "70%",
-      duration: "3 Bulan",
+      duration: "1 Tahun",
       features: [
         "Akses ke SEMUA materi pembelajaran",
         "Konsultasi dengan mentor 5x per minggu",
         "Download materi PDF eksklusif",
         "Grup diskusi komunitas",
-        "Sertifikat partisipasi",
         "Update materi berkala",
         "Priority support",
         "Video rekaman sesi",
         "Personal learning plan",
-        "Assessment perkembangan"
+        "Assessment perkembangan",
+        "Berkesempatan menjadi Brand Ambassador"
       ],
-      buttonText: "Pilih Paket 3 Bulan",
+      buttonText: "Pilih Paket 1 Tahun",
       popular: false,
-      link: "https://link.id/ambilprestasi-3bulan"
+      link: "https://lynk.id/ambilprestasi"
     }
   ]
 
@@ -564,14 +558,12 @@ export default function EMentoringPage() {
               <div className="text-center py-6">
                 <div className="bg-yellow-100 border border-yellow-400 rounded-lg p-4 max-w-md mx-auto">
                   <p className="text-yellow-800 font-medium">{error}</p>
-                  {error.includes('login kembali') && (
-                    <button 
-                      onClick={() => router.push('/auth/login')}
-                      className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
-                    >
-                      Login Kembali
-                    </button>
-                  )}
+                  <button 
+                    onClick={() => window.location.reload()}
+                    className="mt-2 bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-sm"
+                  >
+                    Coba Lagi
+                  </button>
                 </div>
               </div>
             )}
@@ -582,7 +574,7 @@ export default function EMentoringPage() {
                 {filteredMentors.map((mentor) => (
                   <div
                     key={mentor.id}
-                    className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200"
+                    className="bg-white rounded-lg overflow-hidden shadow-md border border-gray-200 hover:shadow-lg transition-shadow cursor-pointer"
                     onClick={() => setSelectedMentor(mentor)}
                   >
                     <div className="relative h-40 bg-blue-50">
