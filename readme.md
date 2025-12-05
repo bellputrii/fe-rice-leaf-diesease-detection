@@ -1,73 +1,125 @@
-# 🎓 Ambil Prestasi
+# 🌾 **PadiCheck AI — Rice Leaf Disease Detection**
 
-**Ambil Prestasi** adalah platform belajar online terpadu yang dirancang untuk membantu mahasiswa meraih prestasi terbaik mereka melalui materi pembelajaran berkualitas dan bimbingan dari mentor profesional.  
-Platform ini menghadirkan pengalaman belajar yang fleksibel, memungkinkan mahasiswa belajar kapan saja dan di mana saja.
+**PadiCheck AI** adalah platform berbasis kecerdasan buatan yang dirancang untuk membantu petani dan masyarakat dalam **mendeteksi penyakit pada daun padi secara otomatis** melalui teknologi *image detection*.
+Dengan mengunggah foto daun padi, pengguna dapat memperoleh informasi lengkap mengenai penyakit yang terdeteksi, tingkat akurasi prediksi, serta rekomendasi perawatan yang relevan.
 
----
-
-## 🚀 Fitur Utama
-
-Platform ini menyediakan berbagai fitur untuk mendukung proses pembelajaran digital secara efektif dan interaktif.
-
-- **Materi Pembelajaran Lengkap** — mencakup berbagai topik pengembangan akademik dan profesional.  
-- **Fleksibilitas Waktu Belajar** — akses materi kapan pun tanpa batasan waktu.  
-- **Mentor Profesional** — dibimbing langsung oleh pengajar berpengalaman di bidangnya.
+Platform ini bertujuan untuk meningkatkan produktivitas pertanian melalui pemanfaatan teknologi modern yang mudah digunakan.
 
 ---
 
-## 👥 Role dan Hak Akses
+## 🚀 **Fitur Utama**
 
-### Admin  
-Admin bertanggung jawab atas pengelolaan struktur utama platform.  
-Dapat melakukan:
-- CRUD Teacher (membuat, membaca, memperbarui, dan menghapus data pengajar).  
-- CRUD Kategori Kelas untuk mengatur pengelompokan konten pembelajaran.
+### 🔎 **1. Deteksi Penyakit Daun Padi (AI Image Detection)**
 
-### Teacher (Pengajar)  
-Teacher memiliki kendali penuh atas konten pembelajaran yang dibuat.  
-Dapat melakukan:
-- CRUD Kelas, Section, Materi, dan Quiz untuk menyusun alur pembelajaran yang sistematis.
+Pengguna dapat mengunggah gambar daun padi untuk dianalisis oleh model AI.
+Sistem akan menghasilkan laporan deteksi berisi informasi penyakit, tingkat akurasi, status kesehatan, dan saran penanganan.
 
-### Student (Mahasiswa)  
-Student dapat menjelajahi seluruh kelas yang tersedia melalui `GET /classes`, melihat detail kelas dan materi, serta mengakses materi penuh setelah mendaftar paket belajar tertentu.  
-Setiap pendaftaran paket akan memberikan **kode referral** untuk mengakses semua kelas sesuai **durasi paket** yang dipilih.  
-Student juga dapat melihat seluruh mentor melalui `GET /mentor`.
+### 📚 **2. Artikel Edukatif**
+
+Pengguna dapat membaca berbagai artikel terkait:
+
+* Penyakit pada tanaman padi
+* Teknik perawatan dan pencegahan penyakit
+* Informasi agrikultur lainnya
+
+Artikel dapat diakses secara publik tanpa perlu login.
+
+### 📝 **3. Riwayat Deteksi**
+
+Pengguna yang telah login dapat mengakses riwayat deteksi yang mencakup:
+
+* Foto daun yang pernah diunggah
+* Jenis penyakit yang ditemukan
+* Akurasi prediksi
+* Waktu deteksi
+* Detail penyakit
+
+### 👤 **4. Manajemen Profil Pengguna**
+
+Pengguna dapat memperbarui:
+
+* Nama
+* Email
+* Foto profil
+* Data lain yang relevan
+
+### 🛠 **5. Manajemen Artikel untuk Admin**
+
+Admin memiliki akses untuk mengelola konten artikel, meliputi:
+
+* Membuat artikel baru
+* Mengedit artikel
+* Menghapus artikel
+* Mengatur struktur konten
 
 ---
 
-## 🧩 Arsitektur dan Deployment
+## 🧩 **Arsitektur Sistem**
 
-Frontend dikembangkan menggunakan **Next.js** dan di-deploy melalui **Vercel** untuk memastikan performa tinggi dan skalabilitas.  
-Backend dibangun dengan **Node.js** dan di-deploy menggunakan **Virtual Private Server (VPS)**.  
-Keduanya terhubung melalui RESTful API dengan autentikasi berbasis role.
+PadiCheck AI menggunakan arsitektur multi-layer yang memisahkan modul AI dan modul API utama:
+
+### **1. Model AI (Flask)**
+
+* Dibangun menggunakan **Flask**
+* Bertanggung jawab memproses gambar dan menjalankan model Machine Learning
+* Menghasilkan prediksi penyakit, akurasi, serta metadata deteksi
+
+### **2. Backend Utama (NestJS)**
+
+* Mengelola alur data antara frontend dan modul AI
+* Menyimpan hasil deteksi pada database
+* Mengelola autentikasi, artikel, user, dan riwayat deteksi
+* Mengonsumsi API dari Flask untuk memproses hasil model
+* Menggunakan pendekatan RESTful API dengan keamanan JWT
+
+### **3. Frontend (Next.js)**
+
+* Menyediakan antarmuka yang responsif untuk pengguna
+* Dibangun menggunakan **Next.js 15 + TypeScript**
+* Di-deploy melalui **Vercel** untuk kinerja optimal
 
 ---
 
-## ⚙️ Tech Stack
+## ⚙️ **Tech Stack**
 
-Framework utama yang digunakan adalah **Next.js 15.5.3** dengan bahasa pemrograman **TypeScript**.  
-Antarmuka dirancang menggunakan **Tailwind CSS**, **Radix UI**, dan ikon dari **lucide-react** serta **@tabler/icons-react**.  
+### **Frontend**
 
-Komponen penting lainnya mencakup:
-- Data visualization menggunakan **recharts**.  
-- State management dengan **React 19.1.0**.  
-- Validasi data menggunakan **zod**.  
-- Fitur drag-and-drop dengan **@dnd-kit/core** dan **@dnd-kit/sortable**.  
-- Sistem notifikasi dengan **sonner**.  
-- Linting dan commit linting menggunakan **ESLint**, **commitlint**, dan **husky**.  
-- Build tool menggunakan **Turbopack** untuk proses development dan build yang lebih cepat.
+* Next.js 15
+* TypeScript
+* Tailwind CSS
+* Radix UI
+* Recharts
+* lucide-react / @tabler/icons-react
+* @dnd-kit/core & sortable
+* sonner notifications
+* Turbopack
+* ESLint + Husky + commitlint
+
+### **Backend**
+
+* NestJS
+* Prisma / PostgreSQL
+* JWT Authentication
+* Multer untuk upload gambar
+* Railway / VPS deployment
+
+### **AI Model**
+
+* Flask
+* TensorFlow / PyTorch
+* OpenCV
+* Model klasifikasi penyakit daun padi
 
 ---
 
-## 🧠 Panduan Pengembangan
-
-Proyek ini dapat dijalankan secara lokal dengan langkah-langkah berikut.
+## 🧠 **Panduan Development**
 
 ### 1. Clone Repository
-```bash
-git clone https://github.com/username/ambilprestasi.git
-cd ambilprestasi
 
+```bash
+git clone https://github.com/username/padicheck-ai.git
+cd padicheck-ai
+```
 
 ### 2. Install Dependencies
 
@@ -75,7 +127,7 @@ cd ambilprestasi
 npm install
 ```
 
-### 3. Jalankan di Mode Pengembangan
+### 3. Jalankan Project (Frontend)
 
 ```bash
 npm run dev
@@ -85,37 +137,42 @@ npm run dev
 
 ```bash
 npm run build
-npm run start
+npm start
 ```
 
----
-
-## 🌐 Deployment
-
-### Frontend
-
-* Dideploy otomatis menggunakan Vercel pada alamat:
-🔗 https://ambilprestasi.vercel.app
-* Build tool menggunakan **Turbopack** untuk performa optimal.
-
-### Backend
-
-* Dideploy di **VPS** menggunakan konfigurasi Node.js + Express.
-* API endpoint dihubungkan dengan frontend melalui konfigurasi environment variable (`NEXT_PUBLIC_API_URL`).
+*(Untuk backend NestJS dan Flask model, jalankan sesuai dokumentasi masing-masing folder.)*
 
 ---
 
-## 💡 Visi
+## 🌐 **Deployment**
 
-Menjadi **platform pembelajaran digital unggulan** yang memberdayakan mahasiswa untuk berkembang, berkompetisi, dan berprestasi di dunia akademik maupun profesional melalui teknologi modern dan mentor inspiratif.
+### **Frontend**
+
+* Dideploy melalui **Vercel**
+* Sistem build menggunakan **Turbopack**
+
+### **Backend (NestJS)**
+
+* Dideploy pada **Railway** atau **VPS**
+* Mengelola API utama & database
+
+### **Model AI (Flask)**
+
+* Dideploy terpisah, terintegrasi dengan backend melalui API internal
 
 ---
 
-## 🧾 Lisensi
+## 💡 **Visi PadiCheck AI**
+
+Menjadi solusi teknologi berbasis AI yang membantu petani mengenali penyakit tanaman dengan cepat, akurat, dan mudah, sehingga mendukung peningkatan produktivitas pertanian Indonesia.
+
+---
+
+## 🧾 **Lisensi**
 
 Proyek ini dilindungi oleh lisensi pribadi.
-Dilarang memperbanyak atau mendistribusikan ulang tanpa izin dari pengembang resmi.
+Dilarang memperbanyak, menyalin, atau mendistribusikan ulang tanpa izin resmi.
 
 ---
 
-### ✨ Dibangun dengan semangat kolaborasi dan pembelajaran berkelanjutan.
+### ✨ Dibangun dengan komitmen untuk mendukung pertanian berkelanjutan melalui inovasi teknologi.
